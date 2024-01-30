@@ -31,7 +31,7 @@ model Account {
   company   String?
   gender    Gender?
   createdAt DateTime  @default(now()) @map("created_at") @db.Timestamptz()
-  updatedAt DateTime  @updatedAt @map("updated_at") @db.Timestamptz()
+  updatedAt DateTime  @default(now()) @updatedAt @map("updated_at") @db.Timestamptz()
 
   // Incoming Relations
   // One To Many
@@ -84,7 +84,7 @@ model Webinar {
   subCategoryId        String?     @map("sub_category_id") @db.Uuid
   certificate          String?
   createdAt            DateTime    @default(now()) @map("created_at") @db.Timestamptz()
-  updatedAt            DateTime    @updatedAt @map("updated_at") @db.Timestamptz()
+  updatedAt            DateTime    @default(now()) @updatedAt @map("updated_at") @db.Timestamptz()
 
   // Incoming Relations
   // One to Many
@@ -107,7 +107,7 @@ model WebinarHistory {
   price     Float
   webinarId String?  @map("webinar_id") @db.Uuid
   createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz()
-  updatedAt DateTime @updatedAt @map("updated_at") @db.Timestamptz()
+  updatedAt DateTime @default(now()) @updatedAt @map("updated_at") @db.Timestamptz()
 
   // Incoming Relations
   // One to One
@@ -125,7 +125,7 @@ model Attendee {
   accountId String   @map("account_id") @db.Uuid
   webinarId String   @map("webinar_id") @db.Uuid
   createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz()
-  updatedAt DateTime @updatedAt @map("updated_at") @db.Timestamptz()
+  updatedAt DateTime @default(now()) @updatedAt @map("updated_at") @db.Timestamptz()
 
   // Outgoing Relations
   // Many To One
@@ -145,7 +145,7 @@ model Cart {
   accountId String   @map("account_id") @db.Uuid
   productId String   @map("product_id") @db.Uuid
   createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz()
-  updatedAt DateTime @updatedAt @map("updated_at") @db.Timestamptz()
+  updatedAt DateTime @default(now()) @updatedAt @map("updated_at") @db.Timestamptz()
 
   // Outgoing Relations
   // Many To One

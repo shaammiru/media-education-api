@@ -3,3 +3,10 @@ node_modules
 
 #  Environment variables
 .env
+
+# IDE files
+.vscode
+.idea
+
+# Logs
+logs
