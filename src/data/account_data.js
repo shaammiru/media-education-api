@@ -1,6 +1,6 @@
-const prismaClient = require("@prisma/client").PrismaClient;
+const PrismaClient = require("@prisma/client").PrismaClient;
 
-const prisma = new prismaClient();
+const Prisma = new PrismaClient();
 
 const excludeFields = (account, keys) => {
   return Object.fromEntries(
@@ -9,7 +9,7 @@ const excludeFields = (account, keys) => {
 };
 
 const create = async (validData) => {
-  const account = await prisma.account.create({
+  const account = await Prisma.account.create({
     data: validData,
   });
 
@@ -17,7 +17,7 @@ const create = async (validData) => {
 };
 
 const list = async () => {
-  const accounts = await prisma.account.findMany();
+  const accounts = await Prisma.account.findMany();
 
   if (!accounts) return;
 
@@ -27,7 +27,7 @@ const list = async () => {
 };
 
 const getById = async (accountId) => {
-  const account = await prisma.account.findUnique({
+  const account = await Prisma.account.findUnique({
     where: {
       id: accountId,
     },
@@ -41,30 +41,28 @@ const getById = async (accountId) => {
 };
 
 const updateById = async (accountId, validData) => {
-  const account = await prisma.account.update({
+  const account = await Prisma.account.update({
     where: {
       id: accountId,
     },
     data: validData,
-    select: {
-      password: false,
-    },
   });
 
-  return account;
+  const accountWithoutPassword = excludeFields(account, ["password"]);
+
+  return accountWithoutPassword;
 };
 
 const deleteById = async (accountId) => {
-  const account = await prisma.account.delete({
+  const account = await Prisma.account.delete({
     where: {
       id: accountId,
     },
-    select: {
-      password: false,
-    },
   });
 
-  return account;
+  const accountWithoutPassword = excludeFields(account, ["password"]);
+
+  return accountWithoutPassword;
 };
 
 module.exports = {

@@ -4,8 +4,8 @@ const roleEnum = ["ADMIN", "USER"];
 const genderEnum = ["LAKI_LAKI", "PEREMPUAN"];
 
 const userSchema = Joi.object({
-  fullname: Joi.string().alphanum().required(),
-  username: Joi.string().alphanum().required(),
+  fullname: Joi.string().required(),
+  username: Joi.string().regex(/^[a-zA-Z0-9_-]+$/).required(),
   email: Joi.string().email().required(),
   password: Joi.string().min(8).required(),
   role: Joi.string().valid(...roleEnum).required(),

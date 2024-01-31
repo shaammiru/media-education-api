@@ -1,30 +1,30 @@
-const accountData = require("../data/account_data");
+const AccountData = require("../data/account_data");
 
-const create = async (req, res) => {
+const create = async (req, res, next) => {
   try {
     const validData = req.body.validData;
-    const account = await accountData.create(validData);
+    const account = await AccountData.create(validData);
 
     return res.status(201).json({ message: "User created", data: account });
   } catch (error) {
-    return res.status(500).json({ error: error.message });
+    next(error);
   }
 };
 
-const list = async (req, res) => {
+const list = async (req, res, next) => {
   try {
-    const accounts = await accountData.list();
+    const accounts = await AccountData.list();
 
     return res.status(200).json({ message: "List of users", data: accounts });
   } catch (error) {
-    return res.status(500).json({ error: error.message });
+    next(error);
   }
 };
 
-const getById = async (req, res) => {
+const getById = async (req, res, next) => {
   try {
     const accountId = req.params.id;
-    const account = await accountData.getById(accountId);
+    const account = await AccountData.getById(accountId);
 
     if (!account) {
       return res.status(404).json({ message: "User not found" });
@@ -32,30 +32,30 @@ const getById = async (req, res) => {
 
     return res.status(200).json({ message: "User by id", data: account });
   } catch (error) {
-    return res.status(500).json({ error: error.message });
+    next(error);
   }
 };
 
-const updateById = async (req, res) => {
+const updateById = async (req, res, next) => {
   try {
     const accountId = req.params.id;
     const validData = req.body.validData;
-    const account = await accountData.updateById(accountId, validData);
+    const account = await AccountData.updateById(accountId, validData);
 
     return res.status(200).json({ message: "User updated", data: account });
   } catch (error) {
-    return res.status(500).json({ error: error.message });
+    next(error);
   }
 };
 
-const deleteById = async (req, res) => {
+const deleteById = async (req, res, next) => {
   try {
     const accountId = req.params.id;
-    const account = await accountData.deleteById(accountId);
+    const account = await AccountData.deleteById(accountId);
 
     return res.status(200).json({ message: "User deleted", data: account });
   } catch (error) {
-    return res.status(500).json({ error: error.message });
+    next(error);
   }
 };
 
