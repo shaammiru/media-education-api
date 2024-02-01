@@ -1,0 +1,23 @@
+POST http://localhost:3000/v1/sub-categories
+content-type: application/json
+
+{
+  "name": "Sub Category Name"
+}
+
+###
+GET http://localhost:3000/v1/sub-categories
+
+###
+GET http://localhost:3000/v1/sub-categories/f03e4ae4-8902-41d9-8c41-87f151d88969
+
+### 
+PUT http://localhost:3000/v1/sub-categories/f03e4ae4-8902-41d9-8c41-87f151d88969
+Content-Type: application/json
+
+{
+  "name": "Updated Sub Category Name"
+}
+
+###
+DELETE http://localhost:3000/v1/sub-categories/f03e4ae4-8902-41d9-8c41-87f151d88969

@@ -1,0 +1,38 @@
+POST http://localhost:3000/v1/webinars
+Content-Type: application/json
+
+{
+  "title": "Webinar Test",
+  "banner": "https://banner.com/banner.jpg",
+  "description": "Webinar Description Test",
+  "startTime": "2024-02-01T07:22:11",
+  "endTime": "2024-02-01T07:22:11",
+  "eventStatus": "ONLINE",
+  "maxAttendees": 100,
+  "price": 50000
+}
+
+###
+GET http://localhost:3000/v1/webinars
+
+###
+GET http://localhost:3000/v1/webinars/86dce921-75b0-40fd-843c-ba61982012b9
+
+### 
+PUT http://localhost:3000/v1/webinars/86dce921-75b0-40fd-843c-ba61982012b9
+Content-Type: application/json
+
+{
+  "title": "Webinar Test",
+  "banner": "https://banner.com/banner.jpg",
+  "description": "Webinar Description Test",
+  "startTime": "2024-02-01T07:22:11",
+  "endTime": "2024-02-01T07:22:11",
+  "eventStatus": "ONLINE",
+  "maxAttendees": 100,
+  "price": 70000,
+  "categoryId": "66cb07e7-288c-483c-abb3-4b22e8ee017e"
+}
+
+###
+DELETE http://localhost:3000/v1/webinars/4eadda44-8a13-4f9c-9281-97a37b8b719f

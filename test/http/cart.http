@@ -1,0 +1,26 @@
+POST http://localhost:3000/v1/carts
+Content-Type: application/json
+
+{
+  "type": "WEBINAR",
+  "accountId": "900006c4-fcbd-4596-9656-d9ea8bb1b43a",
+  "productId": "034b5c0f-a6e2-4365-b6ea-f22048749d7f"
+}
+
+###
+GET http://localhost:3000/v1/carts
+
+###
+GET http://localhost:3000/v1/carts/6d6c97d9-cac2-4d93-9166-c26644650a10
+
+### 
+PUT http://localhost:3000/v1/carts/6d6c97d9-cac2-4d93-9166-c26644650a10
+Content-Type: application/json
+
+{
+  "type": "WEBINAR",
+  "productId": "1f0b1903-a672-481f-9f2f-90350a430593"
+}
+
+###
+DELETE http://localhost:3000/v1/carts/6d6c97d9-cac2-4d93-9166-c26644650a10

@@ -1,0 +1,36 @@
+POST http://localhost:3000/v1/accounts
+Content-Type: application/json
+
+{
+  "fullname": "Fullname Test",
+  "username": "usernametest",
+  "email": "test@mail.com",
+  "password": "PasswordTest",
+  "role": "USER"
+}
+
+###
+GET http://localhost:3000/v1/accounts
+
+###
+GET http://localhost:3000/v1/accounts/1
+
+### 
+PUT http://localhost:3000/v1/accounts/9d864eeb-f942-4bed-b9c6-87fd5f78a956
+Content-Type: application/json
+
+{
+  "fullname": "Fullname Test",
+  "username": "usernametest",
+  "email": "test@mail.com",
+  "password": "PasswordTest",
+  "role": "USER",
+  "phone": "628123456789",
+  "address": "Address Test",
+  "birthdate": "2024-02-01T07:22:11",
+  "company": "Company Test",
+  "gender": "LAKI_LAKI"
+}
+
+###
+DELETE http://localhost:3000/v1/accounts/9d864eeb-f942-4bed-b9c6-87fd5f78a956

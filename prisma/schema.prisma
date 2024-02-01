@@ -1,0 +1,159 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
+}
+
+enum Role {
+  ADMIN
+  USER
+}
+
+enum Gender {
+  LAKI_LAKI
+  PEREMPUAN
+}
+
+model Account {
+  id        String    @id @default(uuid()) @db.Uuid
+  fullname  String
+  username  String    @unique
+  email     String    @unique
+  password  String
+  role      Role
+  phone     String?
+  address   String?
+  birthdate DateTime? @map("birth_date")
+  company   String?
+  gender    Gender?
+  createdAt DateTime  @default(now()) @map("created_at") @db.Timestamptz()
+  updatedAt DateTime  @default(now()) @updatedAt @map("updated_at") @db.Timestamptz()
+
+  // Incoming Relations
+  // One To Many
+  attendees Attendee[] @relation("attendees.account_id_TO_webinars")
+  carts     Cart[]     @relation("carts.account_id_TO_accounts")
+
+  @@map("accounts")
+}
+
+enum EventStatus {
+  OFFLINE
+  ONLINE
+}
+
+model Category {
+  id        String   @id @default(uuid()) @db.Uuid
+  name      String
+  createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz()
+
+  // Incoming Relations
+  // One to Many
+  webinars Webinar[] @relation("webinars.category_id_TO_categories")
+
+  @@map("categories")
+}
+
+model SubCategory {
+  id        String   @id @default(uuid()) @db.Uuid
+  name      String
+  createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz()
+
+  // Incoming Relations
+  // One to Many
+  webinars Webinar[] @relation("webinars.sub_category_id_TO_sub_categories")
+
+  @@map("sub_categories")
+}
+
+model Webinar {
+  id                   String      @id @default(uuid()) @db.Uuid
+  title                String
+  banner               String
+  description          String
+  startTime            DateTime    @map("start_time") @db.Timestamptz()
+  endTime              DateTime    @map("end_time") @db.Timestamptz()
+  eventStatus          EventStatus @map("event_status")
+  maxAttendees         Int         @map("max_attendees")
+  lastWebinarHistoryId String      @unique @map("last_webinar_history_id") @db.Uuid
+  certificate          String?
+  categoryId           String?     @map("category_id") @db.Uuid
+  subCategoryId        String?     @map("sub_category_id") @db.Uuid
+  createdAt            DateTime    @default(now()) @map("created_at") @db.Timestamptz()
+  updatedAt            DateTime    @default(now()) @updatedAt @map("updated_at") @db.Timestamptz()
+
+  // Incoming Relations
+  // One to Many
+  webinarHistories WebinarHistory[] @relation("webinar_histories.webinar_id_TO_webinars")
+  attendees        Attendee[]       @relation("attendees.webinar_id_TO_webinars")
+  carts            Cart[]           @relation("carts.product_id_TO_webinars")
+
+  // Outgoing Relations
+  // One to One
+  lastWebinarHistory WebinarHistory @relation("webinars.last_webinar_history_id_TO_webinar_histories", fields: [lastWebinarHistoryId], references: [id], onUpdate: Restrict, onDelete: Restrict)
+  // Many to One
+  category           Category?      @relation("webinars.category_id_TO_categories", fields: [categoryId], references: [id], onUpdate: SetNull, onDelete: SetNull)
+  subCategory        SubCategory?   @relation("webinars.sub_category_id_TO_sub_categories", fields: [subCategoryId], references: [id], onUpdate: SetNull, onDelete: SetNull)
+
+  @@map("webinars")
+}
+
+model WebinarHistory {
+  id        String   @id @default(uuid()) @db.Uuid
+  price     Float
+  webinarId String?  @map("webinar_id") @db.Uuid
+  createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz()
+  updatedAt DateTime @default(now()) @updatedAt @map("updated_at") @db.Timestamptz()
+
+  // Incoming Relations
+  // One to One
+  lastWebinar Webinar? @relation("webinars.last_webinar_history_id_TO_webinar_histories")
+
+  // Outgoing Relations
+  // Many to One
+  webinar Webinar? @relation("webinar_histories.webinar_id_TO_webinars", fields: [webinarId], references: [id], onUpdate: SetNull, onDelete: SetNull)
+
+  @@map("webinar_histories")
+}
+
+model Attendee {
+  id        String   @id @default(uuid()) @db.Uuid
+  accountId String   @map("account_id") @db.Uuid
+  webinarId String   @map("webinar_id") @db.Uuid
+  createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz()
+  updatedAt DateTime @default(now()) @updatedAt @map("updated_at") @db.Timestamptz()
+
+  // Outgoing Relations
+  // Many To One
+  account Account @relation("attendees.account_id_TO_webinars", fields: [accountId], references: [id], onUpdate: NoAction, onDelete: NoAction)
+  webinar Webinar @relation("attendees.webinar_id_TO_webinars", fields: [webinarId], references: [id], onUpdate: NoAction, onDelete: NoAction)
+
+  @@map("attendees")
+}
+
+enum CartType {
+  WEBINAR
+}
+
+model Cart {
+  id        String   @id @default(uuid()) @db.Uuid
+  type      CartType @map("type")
+  accountId String   @map("account_id") @db.Uuid
+  productId String?   @map("product_id") @db.Uuid
+  createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz()
+  updatedAt DateTime @default(now()) @updatedAt @map("updated_at") @db.Timestamptz()
+
+  // Outgoing Relations
+  // Many To One
+  account Account @relation("carts.account_id_TO_accounts", fields: [accountId], references: [id], onUpdate: NoAction, onDelete: Cascade)
+  webinar Webinar? @relation("carts.product_id_TO_webinars", fields: [productId], references: [id], onUpdate: NoAction, onDelete: SetNull)
+
+  @@map("carts")
+}
