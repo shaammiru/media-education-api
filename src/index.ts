@@ -8,6 +8,7 @@ import {
   joiErrorHandler,
   prismaErrorHandler,
   errorHandler,
+  multerErrorHandler,
 } from "./middleware/errorHandler";
 
 // Routes
@@ -27,6 +28,7 @@ app.use("/v1", router);
 // Load error handler middlewares
 app.use(joiErrorHandler);
 app.use(prismaErrorHandler);
+app.use(multerErrorHandler);
 app.use(errorHandler);
 
 app.listen(3000, () => {
