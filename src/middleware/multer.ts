@@ -23,9 +23,7 @@ const imageFilter = (
   ) {
     cb(null, true);
   } else {
-    cb(
-      new multer.MulterError("LIMIT_UNEXPECTED_FILE", "File type not allowed")
-    );
+    cb(new multer.MulterError("LIMIT_UNEXPECTED_FILE", "File type not allowed"));
   }
 };
 

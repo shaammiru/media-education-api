@@ -28,6 +28,8 @@ const prismaErrorHandler = (
         return res.status(400).json({ error: "Invalid input" });
       case "P2025":
         return res.status(404).json({ error: "Record not found" });
+      default:
+        next(err);
     }
   }
 
@@ -43,9 +45,15 @@ const multerErrorHandler = (
   if (err instanceof MulterError) {
     switch (err.code) {
       case "LIMIT_UNEXPECTED_FILE":
-        return res.status(400).json({ error: "File type not allowed" });
+        if (err.field === "File type not allowed") {
+          return res.status(400).json({ error: err.field });
+        }
+
+        return res.status(400).json({ error: "Unexpected field" });
       case "LIMIT_FILE_SIZE":
         return res.status(400).json({ error: "File size too large" });
+      default:
+        next(err);
     }
   }
 
@@ -58,6 +66,7 @@ const errorHandler = (
   res: Response,
   next: NextFunction
 ) => {
+  console.error(err);
   return res.status(500).json({ error: "Internal server error" });
 };
 
