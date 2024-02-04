@@ -3,7 +3,6 @@ Content-Type: application/json
 
 {
   "title": "Webinar Test",
-  "banner": "https://banner.com/banner.jpg",
   "description": "Webinar Description Test",
   "startTime": "2024-02-01T07:22:11",
   "endTime": "2024-02-01T07:22:11",
@@ -24,7 +23,6 @@ Content-Type: application/json
 
 {
   "title": "Webinar Test",
-  "banner": "https://banner.com/banner.jpg",
   "description": "Webinar Description Test",
   "startTime": "2024-02-01T07:22:11",
   "endTime": "2024-02-01T07:22:11",

@@ -1,10 +1,15 @@
 import { NextFunction, Request, Response } from "express";
 import webinarData from "../data/webinarData";
+import s3 from "../utility/awsS3";
 
 const create = async (req: Request, res: Response, next: NextFunction) => {
   try {
+    const bannerUrl = await s3.upload(req.file!, "webinar/banner");
+    req.body.banner = bannerUrl;
     const webinar = await webinarData.create(req.body);
-    return res.status(201).json({ message: "Webinar created", data: webinar });
+    return res
+      .status(201)
+      .json({ message: "Webinar created", data: webinar });
   } catch (error) {
     next(error);
   }
@@ -13,7 +18,9 @@ const create = async (req: Request, res: Response, next: NextFunction) => {
 const list = async (req: Request, res: Response, next: NextFunction) => {
   try {
     const webinars = await webinarData.list();
-    return res.status(200).json({ message: "List of Webinars", data: webinars });
+    return res
+      .status(200)
+      .json({ message: "List of Webinars", data: webinars });
   } catch (error) {
     next(error);
   }

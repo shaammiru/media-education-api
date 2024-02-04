@@ -1,15 +1,5 @@
 import { Request } from "express";
 import multer from "multer";
-import path from "path";
-
-const storage = multer.diskStorage({
-  destination: (req, file, cb) => {
-    cb(null, "uploads/");
-  },
-  filename: (req, file, cb) => {
-    cb(null, Date.now() + path.extname(file.originalname));
-  },
-});
 
 const imageFilter = (
   req: Request,
@@ -18,17 +8,19 @@ const imageFilter = (
 ) => {
   if (
     file.mimetype === "image/jpeg" ||
-    file.mimetype === "image/png" ||
-    file.mimetype === "image/jpg"
+    file.mimetype === "image/jpg" ||
+    file.mimetype === "image/png"
   ) {
     cb(null, true);
   } else {
-    cb(new multer.MulterError("LIMIT_UNEXPECTED_FILE", "File type not allowed"));
+    cb(
+      new multer.MulterError("LIMIT_UNEXPECTED_FILE", "File type not allowed")
+    );
   }
 };
 
 const imageUpload = multer({
-  storage: storage,
+  storage: multer.memoryStorage(),
   fileFilter: imageFilter,
   limits: { fileSize: 10 * 1024 * 1024 },
 });
