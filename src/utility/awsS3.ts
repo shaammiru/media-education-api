@@ -14,7 +14,7 @@ const s3Client = new S3Client({
 
 const upload = async (file: Express.Multer.File, directory: string) => {
   const key = `${directory}/${Date.now().toString()}-${file.originalname}`;
-  const result = await s3Client.send(
+  await s3Client.send(
     new PutObjectCommand({
       Bucket: bucketName,
       Key: key,
@@ -22,8 +22,6 @@ const upload = async (file: Express.Multer.File, directory: string) => {
       ContentType: file.mimetype,
     })
   );
-
-  console.log(result);
   
   return `https://${bucketName}.s3.${region}.amazonaws.com/${key}`
 };

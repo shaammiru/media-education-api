@@ -35,10 +35,12 @@ const validateBody = (schema: joi.ObjectSchema<any>) => {
   };
 };
 
-const validateMulterImage = (fieldName: string) => {
+const validateImage = (fieldName: string) => {
   return async (req: Request, res: Response, next: NextFunction) => {
     if (!req.file) {
-      return res.status(400).json({ error: `Image file "${fieldName}" is required` });
+      return res
+        .status(400)
+        .json({ error: `Image file "${fieldName}" is required` });
     } else {
       const validationResult = await validateBufferMIMEType(req.file.buffer, {
         originalFilename: req.file.originalname,
@@ -54,4 +56,21 @@ const validateMulterImage = (fieldName: string) => {
   };
 };
 
-export { validateParams, validateBody, validateMulterImage };
+const validateImageUpdate = (fieldName: string) => {
+  return async (req: Request, res: Response, next: NextFunction) => {
+    if (req.file) {
+      const validationResult = await validateBufferMIMEType(req.file.buffer, {
+        originalFilename: req.file.originalname,
+        allowMimeTypes: ["image/jpeg", "image/jpg", "image/png"],
+      });
+      
+      if (validationResult.error) {
+        next(new MulterError("LIMIT_UNEXPECTED_FILE", "File type not allowed"));
+      }
+    }
+
+    next();
+  };
+};
+
+export { validateParams, validateBody, validateImage, validateImageUpdate };

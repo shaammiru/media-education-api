@@ -4,7 +4,8 @@ import { webinarSchema, webinarUpdateSchema } from "../schema/webinarSchema";
 import {
   validateBody,
   validateParams,
-  validateMulterImage,
+  validateImage,
+  validateImageUpdate,
 } from "../middleware/requestValidator";
 import {
   create,
@@ -21,13 +22,19 @@ router.param("id", validateParams());
 router.post(
   "/",
   imageUpload.single("banner"),
-  validateMulterImage("banner"),
+  validateImage("banner"),
   validateBody(webinarSchema),
   create
 );
 router.get("/", list);
 router.get("/:id", getById);
-router.put("/:id", validateBody(webinarUpdateSchema), updateById);
+router.put(
+  "/:id",
+  imageUpload.single("banner"),
+  validateImageUpdate("banner"),
+  validateBody(webinarUpdateSchema),
+  updateById
+);
 router.delete("/:id", deleteById);
 
 export default router;
