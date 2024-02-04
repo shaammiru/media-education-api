@@ -56,7 +56,7 @@ const validateImage = (fieldName: string) => {
   };
 };
 
-const validateImageUpdate = (fieldName: string) => {
+const validateImageUpdate = () => {
   return async (req: Request, res: Response, next: NextFunction) => {
     if (req.file) {
       const validationResult = await validateBufferMIMEType(req.file.buffer, {

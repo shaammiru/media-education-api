@@ -31,7 +31,7 @@ router.get("/:id", getById);
 router.put(
   "/:id",
   imageUpload.single("banner"),
-  validateImageUpdate("banner"),
+  validateImageUpdate(),
   validateBody(webinarUpdateSchema),
   updateById
 );
