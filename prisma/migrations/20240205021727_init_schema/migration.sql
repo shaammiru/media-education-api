@@ -70,7 +70,7 @@ CREATE TABLE "webinars" (
 -- CreateTable
 CREATE TABLE "webinar_histories" (
     "id" UUID NOT NULL,
-    "price" DOUBLE PRECISION NOT NULL,
+    "price" DECIMAL NOT NULL,
     "webinar_id" UUID,
     "created_at" TIMESTAMPTZ NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updated_at" TIMESTAMPTZ NOT NULL DEFAULT CURRENT_TIMESTAMP,

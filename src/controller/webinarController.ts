@@ -39,13 +39,12 @@ const getById = async (req: Request, res: Response, next: NextFunction) => {
 
 const updateById = async (req: Request, res: Response, next: NextFunction) => {
   try {
-    const id = req.params.id;
     if (req.file) {
       const bannerUrl = await s3.upload(req.file, "webinar/banner");
       req.body.banner = bannerUrl;
     }
     
-    const webinar = await webinarData.updateById(id, req.body);
+    const webinar = await webinarData.updateById(req.params.id, req.body);
     return res.status(200).json({ message: "Webinar updated", data: webinar });
   } catch (error) {
     next(error);

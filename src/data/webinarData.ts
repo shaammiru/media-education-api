@@ -1,4 +1,5 @@
 import { PrismaClient } from "@prisma/client";
+import s3 from "../utility/awsS3";
 
 const prisma = new PrismaClient();
 
@@ -93,11 +94,17 @@ const updateById = async (id: string, data: any) => {
 };
 
 const deleteById = async (id: string) => {
-  const webinar = await prisma.webinar.delete({
-    where: {
-      id: id,
-    },
-  });
+  const webinar = await prisma.$transaction(async (prismaTransaction) => {
+    const webinar = await prismaTransaction.webinar.delete({
+      where: {
+        id: id,
+      },
+    });
+
+    await s3.remove(webinar.banner);
+
+    return webinar;
+  })
 
   return webinar;
 };

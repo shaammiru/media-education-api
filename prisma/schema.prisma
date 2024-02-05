@@ -107,7 +107,7 @@ model Webinar {
 
 model WebinarHistory {
   id        String   @id @default(uuid()) @db.Uuid
-  price     Float
+  price     Decimal  @db.Decimal()
   webinarId String?  @map("webinar_id") @db.Uuid
   createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz()
   updatedAt DateTime @default(now()) @updatedAt @map("updated_at") @db.Timestamptz()
@@ -146,13 +146,13 @@ model Cart {
   id        String   @id @default(uuid()) @db.Uuid
   type      CartType @map("type")
   accountId String   @map("account_id") @db.Uuid
-  productId String?   @map("product_id") @db.Uuid
+  productId String?  @map("product_id") @db.Uuid
   createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz()
   updatedAt DateTime @default(now()) @updatedAt @map("updated_at") @db.Timestamptz()
 
   // Outgoing Relations
   // Many To One
-  account Account @relation("carts.account_id_TO_accounts", fields: [accountId], references: [id], onUpdate: NoAction, onDelete: Cascade)
+  account Account  @relation("carts.account_id_TO_accounts", fields: [accountId], references: [id], onUpdate: NoAction, onDelete: Cascade)
   webinar Webinar? @relation("carts.product_id_TO_webinars", fields: [productId], references: [id], onUpdate: NoAction, onDelete: SetNull)
 
   @@map("carts")
