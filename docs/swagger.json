@@ -4,7 +4,10 @@
     "title": "Media Education API",
     "version": "0.1.0"
   },
-  "servers": [{ "url": "https://api.server.test/v1" }],
+  "servers": [
+    { "url": "http://localhost:3000/v1" },
+    { "url": "https://media-education-api.vercel.app/v1" }
+  ],
   "paths": {
     "/accounts": {
       "post": {

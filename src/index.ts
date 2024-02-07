@@ -1,7 +1,10 @@
+import "dotenv/config";
 import express from "express";
 import cors from "cors";
 import helmet from "helmet";
 import compression from "compression";
+import swaggerUi from "swagger-ui-express";
+import swaggerDocument from "../docs/swagger.json";
 
 // Error handling middleware
 import {
@@ -24,6 +27,10 @@ app.use(compression());
 
 // Load routes
 app.use("/v1", router);
+
+// Load swagger documentation
+app.use("/v1/docs", swaggerUi.serve);
+app.get("/v1/docs", swaggerUi.setup(swaggerDocument));
 
 // Load error handler middlewares
 app.use(joiErrorHandler);

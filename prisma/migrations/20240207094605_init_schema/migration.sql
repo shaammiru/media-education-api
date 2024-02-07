@@ -79,17 +79,6 @@ CREATE TABLE "webinar_histories" (
 );
 
 -- CreateTable
-CREATE TABLE "attendees" (
-    "id" UUID NOT NULL,
-    "account_id" UUID NOT NULL,
-    "webinar_id" UUID NOT NULL,
-    "created_at" TIMESTAMPTZ NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    "updated_at" TIMESTAMPTZ NOT NULL DEFAULT CURRENT_TIMESTAMP,
-
-    CONSTRAINT "attendees_pkey" PRIMARY KEY ("id")
-);
-
--- CreateTable
 CREATE TABLE "carts" (
     "id" UUID NOT NULL,
     "type" "CartType" NOT NULL,
@@ -121,12 +110,6 @@ ALTER TABLE "webinars" ADD CONSTRAINT "webinars_sub_category_id_fkey" FOREIGN KE
 
 -- AddForeignKey
 ALTER TABLE "webinar_histories" ADD CONSTRAINT "webinar_histories_webinar_id_fkey" FOREIGN KEY ("webinar_id") REFERENCES "webinars"("id") ON DELETE SET NULL ON UPDATE SET NULL;
-
--- AddForeignKey
-ALTER TABLE "attendees" ADD CONSTRAINT "attendees_account_id_fkey" FOREIGN KEY ("account_id") REFERENCES "accounts"("id") ON DELETE NO ACTION ON UPDATE NO ACTION;
-
--- AddForeignKey
-ALTER TABLE "attendees" ADD CONSTRAINT "attendees_webinar_id_fkey" FOREIGN KEY ("webinar_id") REFERENCES "webinars"("id") ON DELETE NO ACTION ON UPDATE NO ACTION;
 
 -- AddForeignKey
 ALTER TABLE "carts" ADD CONSTRAINT "carts_account_id_fkey" FOREIGN KEY ("account_id") REFERENCES "accounts"("id") ON DELETE CASCADE ON UPDATE NO ACTION;
