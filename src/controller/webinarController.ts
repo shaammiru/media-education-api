@@ -7,9 +7,7 @@ const create = async (req: Request, res: Response, next: NextFunction) => {
     const bannerUrl = await s3.upload(req.file!, "webinar/banner");
     req.body.banner = bannerUrl;
     const webinar = await webinarData.create(req.body);
-    return res
-      .status(201)
-      .json({ message: "Webinar created", data: webinar });
+    return res.status(201).json({ message: "Webinar created", data: webinar });
   } catch (error) {
     next(error);
   }
@@ -41,6 +39,11 @@ const getById = async (req: Request, res: Response, next: NextFunction) => {
 
 const updateById = async (req: Request, res: Response, next: NextFunction) => {
   try {
+    if (req.file) {
+      const bannerUrl = await s3.upload(req.file, "webinar/banner");
+      req.body.banner = bannerUrl;
+    }
+    
     const webinar = await webinarData.updateById(req.params.id, req.body);
     return res.status(200).json({ message: "Webinar updated", data: webinar });
   } catch (error) {

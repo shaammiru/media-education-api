@@ -12,7 +12,7 @@ const webinarSchema = joi.object({
     .valid(...eventStatusEnum)
     .required(),
   maxAttendees: joi.number().integer().required(),
-  price: joi.number().required(),
+  price: joi.number().positive().required(),
   categoryId: joi.string().uuid({ version: "uuidv4" }),
   subCategoryId: joi.string().uuid({ version: "uuidv4" }),
 });
@@ -24,7 +24,7 @@ const webinarUpdateSchema = joi.object({
   endTime: joi.date().iso(),
   eventStatus: joi.string().valid(...eventStatusEnum),
   maxAttendees: joi.number().integer(),
-  price: joi.number(),
+  price: joi.number().positive(),
   categoryId: joi.string().uuid({ version: "uuidv4" }),
   subCategoryId: joi.string().uuid({ version: "uuidv4" }),
 });

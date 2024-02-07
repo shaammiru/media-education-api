@@ -38,8 +38,7 @@ model Account {
 
   // Incoming Relations
   // One To Many
-  attendees Attendee[] @relation("attendees.account_id_TO_webinars")
-  carts     Cart[]     @relation("carts.account_id_TO_accounts")
+  carts Cart[] @relation("carts.account_id_TO_accounts")
 
   @@map("accounts")
 }
@@ -92,7 +91,6 @@ model Webinar {
   // Incoming Relations
   // One to Many
   webinarHistories WebinarHistory[] @relation("webinar_histories.webinar_id_TO_webinars")
-  attendees        Attendee[]       @relation("attendees.webinar_id_TO_webinars")
   carts            Cart[]           @relation("carts.product_id_TO_webinars")
 
   // Outgoing Relations
@@ -107,7 +105,7 @@ model Webinar {
 
 model WebinarHistory {
   id        String   @id @default(uuid()) @db.Uuid
-  price     Float
+  price     Decimal  @db.Decimal()
   webinarId String?  @map("webinar_id") @db.Uuid
   createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz()
   updatedAt DateTime @default(now()) @updatedAt @map("updated_at") @db.Timestamptz()
@@ -123,21 +121,6 @@ model WebinarHistory {
   @@map("webinar_histories")
 }
 
-model Attendee {
-  id        String   @id @default(uuid()) @db.Uuid
-  accountId String   @map("account_id") @db.Uuid
-  webinarId String   @map("webinar_id") @db.Uuid
-  createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz()
-  updatedAt DateTime @default(now()) @updatedAt @map("updated_at") @db.Timestamptz()
-
-  // Outgoing Relations
-  // Many To One
-  account Account @relation("attendees.account_id_TO_webinars", fields: [accountId], references: [id], onUpdate: NoAction, onDelete: NoAction)
-  webinar Webinar @relation("attendees.webinar_id_TO_webinars", fields: [webinarId], references: [id], onUpdate: NoAction, onDelete: NoAction)
-
-  @@map("attendees")
-}
-
 enum CartType {
   WEBINAR
 }
@@ -146,13 +129,13 @@ model Cart {
   id        String   @id @default(uuid()) @db.Uuid
   type      CartType @map("type")
   accountId String   @map("account_id") @db.Uuid
-  productId String?   @map("product_id") @db.Uuid
+  productId String?  @map("product_id") @db.Uuid
   createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz()
   updatedAt DateTime @default(now()) @updatedAt @map("updated_at") @db.Timestamptz()
 
   // Outgoing Relations
   // Many To One
-  account Account @relation("carts.account_id_TO_accounts", fields: [accountId], references: [id], onUpdate: NoAction, onDelete: Cascade)
+  account Account  @relation("carts.account_id_TO_accounts", fields: [accountId], references: [id], onUpdate: NoAction, onDelete: Cascade)
   webinar Webinar? @relation("carts.product_id_TO_webinars", fields: [productId], references: [id], onUpdate: NoAction, onDelete: SetNull)
 
   @@map("carts")
