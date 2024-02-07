@@ -29,6 +29,7 @@ app.use(compression());
 app.use("/v1", router);
 
 // Load swagger documentation
+app.use("/v1/docs", express.static("docs"));
 app.use("/v1/docs", swaggerUi.serve);
 app.get("/v1/docs", swaggerUi.setup(swaggerDocument));
 
