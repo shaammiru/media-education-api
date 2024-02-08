@@ -33,8 +33,8 @@ app.use(
   "/v1/docs",
   swaggerUi.serve,
   swaggerUi.setup(swaggerDocument, {
-    customCss:
-      "https://cdnjs.cloudflare.com/ajax/libs/swagger-ui/4.1.6/swagger-ui.css",
+    customCssUrl:
+      "https://cdnjs.cloudflare.com/ajax/libs/swagger-ui/4.3.0/swagger-ui.min.css",
   })
 );
 
