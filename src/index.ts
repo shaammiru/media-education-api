@@ -3,6 +3,7 @@ import express from "express";
 import cors from "cors";
 import helmet from "helmet";
 import compression from "compression";
+import cookieParser from "cookie-parser";
 import swaggerUi from "swagger-ui-express";
 import swaggerDocument from "../docs/swagger.json";
 
@@ -24,6 +25,7 @@ app.use(express.json());
 app.use(cors());
 app.use(helmet());
 app.use(compression());
+app.use(cookieParser());
 
 // Load routes
 app.use("/v1", router);
@@ -44,6 +46,6 @@ app.use(prismaErrorHandler);
 app.use(multerErrorHandler);
 app.use(errorHandler);
 
-app.listen(3000, () => {
+app.listen(process.env.PORT || 3000, () => {
   console.log("Server is running on port http://localhost:3000");
 });

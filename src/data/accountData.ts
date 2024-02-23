@@ -49,4 +49,14 @@ const deleteById = async (id: string) => {
   return account;
 };
 
-export default { create, list, getById, updateById, deleteById };
+const getByEmail = async (email: string) => {
+  const account = await prisma.account.findUnique({
+    where: {
+      email: email,
+    },
+  });
+
+  return account;
+}
+
+export default { create, list, getById, updateById, deleteById, getByEmail };
