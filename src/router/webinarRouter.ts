@@ -1,4 +1,5 @@
 import { Router } from "express";
+import { verifyToken } from "../middleware/auth";
 import { imageUpload } from "../middleware/multer";
 import { webinarSchema, webinarUpdateSchema } from "../schema/webinarSchema";
 import {
@@ -21,6 +22,7 @@ router.param("id", validateParams());
 
 router.post(
   "/",
+  verifyToken,
   imageUpload.single("banner"),
   validateImage("banner"),
   validateBody(webinarSchema),
@@ -30,11 +32,12 @@ router.get("/", list);
 router.get("/:id", getById);
 router.put(
   "/:id",
+  verifyToken,
   imageUpload.single("banner"),
   validateImageUpdate(),
   validateBody(webinarUpdateSchema),
   updateById
 );
-router.delete("/:id", deleteById);
+router.delete("/:id", verifyToken, deleteById);
 
 export default router;

@@ -1,17 +1,21 @@
 import { Request, Response, NextFunction } from "express";
 import accountData from "../data/accountData";
-import { comparePassword, generateToken, hashPassword } from "../middleware/auth";
+import {
+  comparePassword,
+  generateToken,
+  hashPassword,
+} from "../middleware/auth";
 
 const register = async (req: Request, res: Response, next: NextFunction) => {
   try {
     req.body.role = "USER";
-    req.body.password = await hashPassword(req.body.password)
+    req.body.password = await hashPassword(req.body.password);
     const account = await accountData.create(req.body);
-    return res.status(201).json({ message: "Account created", data: account });
+    return res.status(201).json({ message: "Register success", data: account });
   } catch (error) {
     next(error);
   }
-}
+};
 
 const login = async (req: Request, res: Response, next: NextFunction) => {
   try {
@@ -28,16 +32,18 @@ const login = async (req: Request, res: Response, next: NextFunction) => {
 
     const token = generateToken({
       id: account.id,
+      username: account.username,
+      fullname: account.fullname,
       email: account.email,
-      role: account.role
+      role: account.role,
     });
 
     res.cookie("token", token, { httpOnly: true });
-    return res.status(200).json({ message: "Login success", data: account });
+    return res.status(200).json({ message: "Login success" });
   } catch (error) {
     next(error);
   }
-}
+};
 
 const logout = async (req: Request, res: Response, next: NextFunction) => {
   try {
@@ -46,10 +52,15 @@ const logout = async (req: Request, res: Response, next: NextFunction) => {
   } catch (error) {
     next(error);
   }
-}
+};
 
-export {
-  register,
-  login,
-  logout
-}
+const getCurrentUser = (req: any, res: Response, next: NextFunction) => {
+  try {
+    const user = req.user;
+    return res.status(200).json({ data: user });
+  } catch (error) {
+    next(error);
+  }
+};
+
+export { register, login, logout, getCurrentUser };

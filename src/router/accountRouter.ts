@@ -1,4 +1,5 @@
 import { Router } from "express";
+import { verifyToken } from "../middleware/auth";
 import { validateBody, validateParams } from "../middleware/requestValidator";
 import { accountSchema, accountUpdateSchema } from "../schema/accountSchema";
 import {
@@ -10,6 +11,8 @@ import {
 } from "../controller/accountController";
 
 const router = Router();
+
+router.use(verifyToken);
 
 router.param("id", validateParams());
 

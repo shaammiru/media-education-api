@@ -1,4 +1,5 @@
 import { Router } from "express";
+import { verifyToken } from "../middleware/auth";
 import { validateBody, validateParams } from "../middleware/requestValidator";
 import subCategorySchema from "../schema/categorySchema";
 import {
@@ -13,10 +14,10 @@ const router = Router();
 
 router.param("id", validateParams());
 
-router.post("/", validateBody(subCategorySchema), create);
+router.post("/", verifyToken, validateBody(subCategorySchema), create);
 router.get("/", list);
 router.get("/:id", getById);
-router.put("/:id", validateBody(subCategorySchema), updateById);
-router.delete("/:id", deleteById);
+router.put("/:id", verifyToken, validateBody(subCategorySchema), updateById);
+router.delete("/:id", verifyToken, deleteById);
 
 export default router;

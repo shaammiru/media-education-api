@@ -1,4 +1,5 @@
 import bcrypt from "bcrypt";
+import { Response, NextFunction } from "express";
 import jwt from "jsonwebtoken";
 
 const hashPassword = async (password: string) => {
@@ -19,15 +20,8 @@ const generateToken = (payload: any) => {
   return token;
 };
 
-const verifyToken = (req: any, res: any, next: any) => {
-  let token: string;
-  const bearer = req.headers.authorization as string;
-
-  if (bearer) {
-    token = bearer.split(" ")[1];
-  } else {
-    token = req.cookies.token;
-  }
+const verifyToken = (req: any, res: Response, next: NextFunction) => {
+  const token = req.cookies.token;
 
   if (!token) {
     return res.status(401).json({
