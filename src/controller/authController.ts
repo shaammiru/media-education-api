@@ -64,7 +64,7 @@ const login = async (req: Request, res: Response, next: NextFunction) => {
     res.setHeader("Authorization", `Bearer ${token}`);
     return res
       .status(200)
-      .json(responseBody("Login success", { token }, account));
+      .json(responseBody("Login success", null, { token, account }));
   } catch (error) {
     next(error);
   }
