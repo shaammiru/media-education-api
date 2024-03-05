@@ -57,6 +57,6 @@ const getByEmail = async (email: string) => {
   });
 
   return account;
-}
+};
 
 export default { create, list, getById, updateById, deleteById, getByEmail };

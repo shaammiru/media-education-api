@@ -24,7 +24,8 @@ const verifyToken = (req: any, res: Response, next: NextFunction) => {
   let token = req.cookies.token;
 
   if (!token) {
-    token = req.headers.authorization.split(" ")[1];
+    const header = req.headers.authorization as string;
+    token = header.split(" ")[1];
 
     if (!token) {
       return res.status(401).json({
