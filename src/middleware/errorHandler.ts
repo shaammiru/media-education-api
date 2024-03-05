@@ -2,6 +2,7 @@ import { Request, Response, NextFunction } from "express";
 import { Prisma } from "@prisma/client";
 import { ValidationError } from "joi";
 import { MulterError } from "multer";
+import responseBody from "../utility/responseBody";
 
 const joiErrorHandler = (
   err: unknown,
@@ -10,7 +11,9 @@ const joiErrorHandler = (
   next: NextFunction
 ) => {
   if (err instanceof ValidationError) {
-    return res.status(400).json({ error: err.details[0].message });
+    return res
+      .status(400)
+      .json(responseBody("Validation error", err.details[0].message, null));
   }
 
   next(err);
@@ -25,9 +28,13 @@ const prismaErrorHandler = (
   if (err instanceof Prisma.PrismaClientKnownRequestError) {
     switch (err.code) {
       case "P2002":
-        return res.status(400).json({ error: "Invalid input" });
+        return res
+          .status(400)
+          .json(responseBody("Duplicate record", err.message, null));
       case "P2025":
-        return res.status(404).json({ error: "Record not found" });
+        return res
+          .status(404)
+          .json(responseBody("Record not found", err.message, null));
       default:
         next(err);
     }
@@ -46,12 +53,18 @@ const multerErrorHandler = (
     switch (err.code) {
       case "LIMIT_UNEXPECTED_FILE":
         if (err.field === "File type not allowed") {
-          return res.status(400).json({ error: err.field });
+          return res
+            .status(400)
+            .json(responseBody("File type not allowed", err.message, null));
         }
 
-        return res.status(400).json({ error: "Unexpected field" });
+        return res
+          .status(400)
+          .json(responseBody("Unexpected field", err.message, null));
       case "LIMIT_FILE_SIZE":
-        return res.status(400).json({ error: "File size too large" });
+        return res
+          .status(400)
+          .json(responseBody("File too large", err.message, null));
       default:
         next(err);
     }
@@ -67,7 +80,7 @@ const errorHandler = (
   next: NextFunction
 ) => {
   console.error(err);
-  return res.status(500).json({ error: "Internal server error" });
+  return res.status(500).json(responseBody("Internal server error", err, null));
 };
 
 export {

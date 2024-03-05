@@ -4,7 +4,9 @@ import categoryData from "../data/categoryData";
 const create = async (req: Request, res: Response, next: NextFunction) => {
   try {
     const category = await categoryData.create(req.body);
-    return res.status(201).json({ message: "Category created", data: category });
+    return res
+      .status(201)
+      .json({ message: "Category created", data: category });
   } catch (error) {
     next(error);
   }
@@ -13,7 +15,9 @@ const create = async (req: Request, res: Response, next: NextFunction) => {
 const list = async (req: Request, res: Response, next: NextFunction) => {
   try {
     const categories = await categoryData.list();
-    return res.status(200).json({ message: "List of Categories", data: categories });
+    return res
+      .status(200)
+      .json({ message: "List of Categories", data: categories });
   } catch (error) {
     next(error);
   }
@@ -35,7 +39,9 @@ const getById = async (req: Request, res: Response, next: NextFunction) => {
 const updateById = async (req: Request, res: Response, next: NextFunction) => {
   try {
     const category = await categoryData.updateById(req.params.id, req.body);
-    return res.status(200).json({ message: "Category updated", data: category });
+    return res
+      .status(200)
+      .json({ message: "Category updated", data: category });
   } catch (error) {
     next(error);
   }

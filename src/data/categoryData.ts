@@ -49,4 +49,14 @@ const deleteById = async (id: string) => {
   return category;
 };
 
-export default { create, list, getById, updateById, deleteById };
+const getByName = async (name: string) => {
+  const category = await prisma.category.findUnique({
+    where: {
+      name: name,
+    },
+  });
+
+  return category;
+};
+
+export default { create, list, getById, updateById, deleteById, getByName };
