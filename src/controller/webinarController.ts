@@ -3,6 +3,7 @@ import webinarData from "../data/webinarData";
 import categoryData from "../data/categoryData";
 import s3 from "../utility/awsS3";
 import responseBody from "../utility/responseBody";
+import subCategoryData from "../data/subCategoryData";
 
 const create = async (req: Request, res: Response, next: NextFunction) => {
   try {
@@ -16,6 +17,16 @@ const create = async (req: Request, res: Response, next: NextFunction) => {
           name: req.body.categoryName,
         });
         req.body.categoryId = newCategory.id;
+      }
+    }
+
+    if (req.body.subcategoryName) {
+      const category = await subCategoryData.getByName(req.body.subcategoryName);
+      if (!category) {
+        const newSubCategory = await subCategoryData.create({
+          name: req.body.subcategoryName,
+        });
+        req.body.subCategoryId = newSubCategory.id;
       }
     }
 
@@ -55,6 +66,26 @@ const updateById = async (req: Request, res: Response, next: NextFunction) => {
     if (req.file) {
       const bannerUrl = await s3.upload(req.file, "webinar/banner");
       req.body.banner = bannerUrl;
+    }
+
+    if (req.body.categoryName) {
+      const category = await categoryData.getByName(req.body.categoryName);
+      if (!category) {
+        const newCategory = await categoryData.create({
+          name: req.body.categoryName,
+        });
+        req.body.categoryId = newCategory.id;
+      }
+    }
+
+    if (req.body.subcategoryName) {
+      const category = await subCategoryData.getByName(req.body.subcategoryName);
+      if (!category) {
+        const newSubCategory = await subCategoryData.create({
+          name: req.body.subcategoryName,
+        });
+        req.body.subCategoryId = newSubCategory.id;
+      }
     }
 
     const webinar = await webinarData.updateById(req.params.id, req.body);
