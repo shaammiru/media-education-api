@@ -63,6 +63,7 @@ const login = async (req: Request, res: Response, next: NextFunction) => {
     });
 
     res.cookie("token", token, { httpOnly: true });
+    res.setHeader("Authorization", `Bearer ${token}`);
     return res.status(200).json(responseBody("Login success", null, account));
   } catch (error) {
     next(error);
