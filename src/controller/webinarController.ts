@@ -10,26 +10,6 @@ const create = async (req: Request, res: Response, next: NextFunction) => {
     const bannerUrl = await s3.upload(req.file!, "webinar/banner");
     req.body.banner = bannerUrl;
 
-    if (req.body.categoryName) {
-      const category = await categoryData.getByName(req.body.categoryName);
-      if (!category) {
-        const newCategory = await categoryData.create({
-          name: req.body.categoryName,
-        });
-        req.body.categoryId = newCategory.id;
-      }
-    }
-
-    if (req.body.subcategoryName) {
-      const category = await subCategoryData.getByName(req.body.subcategoryName);
-      if (!category) {
-        const newSubCategory = await subCategoryData.create({
-          name: req.body.subcategoryName,
-        });
-        req.body.subCategoryId = newSubCategory.id;
-      }
-    }
-
     const webinar = await webinarData.create(req.body);
     return res.status(201).json(responseBody("Webinar created", null, webinar));
   } catch (error) {

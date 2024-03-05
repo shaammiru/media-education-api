@@ -1,10 +1,40 @@
 import { PrismaClient } from "@prisma/client";
 import s3 from "../utility/awsS3";
+import subCategoryData from "./subCategoryData";
+import categoryData from "./categoryData";
 
 const prisma = new PrismaClient();
 
 const create = async (data: any) => {
   const webinar = await prisma.$transaction(async (prismaTransaction) => {
+    
+    if (data.categoryName) {
+      const category = await categoryData.getByName(data.categoryName);
+      if (!category) {
+        const newCategory = await prismaTransaction.category.create({
+          data: {
+            name: data.categoryName,
+          }
+        });
+        data.categoryId = newCategory.id;
+      }
+    }
+
+    if (data.subCategoryName) {
+      const subCategory = await subCategoryData.getByName(data.subCategoryName);
+      if (!subCategory) {
+        const newSubCategory = await prismaTransaction.subCategory.create({
+          data: {
+            name: data.subCategoryName,
+          }
+        });
+        data.subCategoryId = newSubCategory.id;
+      }
+    }
+
+    delete data.categoryName;
+    delete data.subCategoryName;
+
     const webinarHistory = await prismaTransaction.webinarHistory.create({
       data: {
         price: data.price,

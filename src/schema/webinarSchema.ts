@@ -13,10 +13,10 @@ const webinarSchema = joi.object({
     .required(),
   maxAttendees: joi.number().integer().required(),
   price: joi.number().positive().required(),
-  categoryName: joi.string(),
-  categoryId: joi.string().uuid({ version: "uuidv4" }),
-  subCategoryName: joi.string(),
-  subCategoryId: joi.string().uuid({ version: "uuidv4" }),
+  categoryName: joi.string().allow(null),
+  categoryId: joi.string().uuid({ version: "uuidv4" }).allow(null),
+  subCategoryName: joi.string().allow(null),
+  subCategoryId: joi.string().uuid({ version: "uuidv4" }).allow(null),
 });
 
 const webinarUpdateSchema = joi.object({
