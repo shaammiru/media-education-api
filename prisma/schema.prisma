@@ -123,6 +123,8 @@ model WebinarHistory {
 
 enum CartType {
   WEBINAR
+  WORKSHOP
+  TRAINING
 }
 
 model Cart {
