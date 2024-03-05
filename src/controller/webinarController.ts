@@ -1,18 +1,20 @@
 import { NextFunction, Request, Response } from "express";
 import webinarData from "../data/webinarData";
-import categoryData from "../data/categoryData";
 import s3 from "../utility/awsS3";
 import responseBody from "../utility/responseBody";
-import subCategoryData from "../data/subCategoryData";
 
 const create = async (req: Request, res: Response, next: NextFunction) => {
+  let bannerUrl = "";
   try {
-    const bannerUrl = await s3.upload(req.file!, "webinar/banner");
+    bannerUrl = await s3.upload(req.file!, "webinar/banner");
     req.body.banner = bannerUrl;
 
     const webinar = await webinarData.create(req.body);
     return res.status(201).json(responseBody("Webinar created", null, webinar));
   } catch (error) {
+    if(bannerUrl !== ""){
+      await s3.remove(bannerUrl);
+    }
     next(error);
   }
 };
@@ -42,35 +44,24 @@ const getById = async (req: Request, res: Response, next: NextFunction) => {
 };
 
 const updateById = async (req: Request, res: Response, next: NextFunction) => {
+  let bannerUrl = "";
   try {
     if (req.file) {
       const bannerUrl = await s3.upload(req.file, "webinar/banner");
+      
+      if(bannerUrl){
+        await s3.remove(req.body.banner);
+      }
+
       req.body.banner = bannerUrl;
-    }
-
-    if (req.body.categoryName) {
-      const category = await categoryData.getByName(req.body.categoryName);
-      if (!category) {
-        const newCategory = await categoryData.create({
-          name: req.body.categoryName,
-        });
-        req.body.categoryId = newCategory.id;
-      }
-    }
-
-    if (req.body.subcategoryName) {
-      const category = await subCategoryData.getByName(req.body.subcategoryName);
-      if (!category) {
-        const newSubCategory = await subCategoryData.create({
-          name: req.body.subcategoryName,
-        });
-        req.body.subCategoryId = newSubCategory.id;
-      }
     }
 
     const webinar = await webinarData.updateById(req.params.id, req.body);
     return res.status(200).json(responseBody("Webinar updated", null, webinar));
   } catch (error) {
+    if(bannerUrl !== ""){
+      await s3.remove(bannerUrl);
+    }
     next(error);
   }
 };
