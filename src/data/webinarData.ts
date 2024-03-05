@@ -55,6 +55,14 @@ const getById = async (id: string) => {
 
 const updateById = async (id: string, data: any) => {
   const webinar = await prisma.$transaction(async (prismaTransaction) => {
+    let webinar = await prismaTransaction.webinar.findUnique({
+      where: {
+        id: id,
+      },
+    });
+
+    if (!webinar) return;
+
     if (data.price) {
       const webinarHistory = await prismaTransaction.webinarHistory.create({
         data: {
@@ -64,8 +72,9 @@ const updateById = async (id: string, data: any) => {
       });
 
       delete data.price;
+      await s3.remove(webinar.banner);
 
-      const webinar = await prismaTransaction.webinar.update({
+      const updatedWebinar = await prismaTransaction.webinar.update({
         where: {
           id: id,
         },
@@ -75,10 +84,12 @@ const updateById = async (id: string, data: any) => {
         },
       });
 
-      return webinar;
+      return updatedWebinar;
     }
 
-    const webinar = await prismaTransaction.webinar.update({
+    await s3.remove(webinar.banner);
+
+    webinar = await prismaTransaction.webinar.update({
       where: {
         id: id,
       },
@@ -104,7 +115,7 @@ const deleteById = async (id: string) => {
     await s3.remove(webinar.banner);
 
     return webinar;
-  })
+  });
 
   return webinar;
 };

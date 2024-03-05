@@ -56,15 +56,15 @@ const login = async (req: Request, res: Response, next: NextFunction) => {
 
     const token = generateToken({
       id: account.id,
-      username: account.username,
       fullname: account.fullname,
       email: account.email,
       role: account.role,
     });
 
-    res.cookie("token", token, { httpOnly: true });
     res.setHeader("Authorization", `Bearer ${token}`);
-    return res.status(200).json(responseBody("Login success", null, account));
+    return res
+      .status(200)
+      .json(responseBody("Login success", { token }, account));
   } catch (error) {
     next(error);
   }
