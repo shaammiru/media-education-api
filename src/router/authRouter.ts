@@ -4,6 +4,7 @@ import { registerSchema, loginSchema } from "../schema/authSchema";
 import { verifyToken } from "../middleware/auth";
 import {
   register,
+  registerAdmin,
   login,
   logout,
   getCurrentUser,
@@ -12,6 +13,7 @@ import {
 const router = Router();
 
 router.post("/register", validateBody(registerSchema), register);
+router.post("/register/admin", validateBody(registerSchema), registerAdmin);
 router.post("/login", validateBody(loginSchema), login);
 router.get("/logout", verifyToken, logout);
 router.get("/user", verifyToken, getCurrentUser);

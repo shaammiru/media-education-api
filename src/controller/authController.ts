@@ -20,6 +20,23 @@ const register = async (req: Request, res: Response, next: NextFunction) => {
   }
 };
 
+const registerAdmin = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    req.body.role = "ADMIN";
+    req.body.password = await hashPassword(req.body.password);
+    const account = await accountData.create(req.body);
+    return res
+      .status(201)
+      .json(responseBody("Register success", null, account));
+  } catch (error) {
+    next(error);
+  }
+};
+
 const login = async (req: Request, res: Response, next: NextFunction) => {
   try {
     const { email, password } = req.body;
@@ -70,4 +87,4 @@ const getCurrentUser = (req: any, res: Response, next: NextFunction) => {
   }
 };
 
-export { register, login, logout, getCurrentUser };
+export { register, registerAdmin, login, logout, getCurrentUser };
