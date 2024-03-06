@@ -12,11 +12,11 @@ const create = async (req: Request, res: Response, next: NextFunction) => {
     req.body.banner = bannerUrl;
 
     if (req.body.categoryName && req.body.categoryName !== "") {
-      req.body.categoryId = await categoryData.getByName(req.body.categoryName);
+      req.body.categoryId = (await categoryData.getByName(req.body.categoryName))?.id;
     }
 
     if (req.body.subCategoryName && req.body.subCategoryName !== "") {
-      req.body.subCategoryId = await subCategoryData.getByName(req.body.subCategoryName);
+      req.body.subCategoryId = (await subCategoryData.getByName(req.body.subCategoryName))?.id;
     }
 
     const webinar = await webinarData.create(req.body);
