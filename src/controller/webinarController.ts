@@ -2,12 +2,22 @@ import { NextFunction, Request, Response } from "express";
 import webinarData from "../data/webinarData";
 import s3 from "../utility/awsS3";
 import responseBody from "../utility/responseBody";
+import categoryData from "../data/categoryData";
+import subCategoryData from "../data/subCategoryData";
 
 const create = async (req: Request, res: Response, next: NextFunction) => {
   let bannerUrl = "";
   try {
     bannerUrl = await s3.upload(req.file!, "webinar/banner");
     req.body.banner = bannerUrl;
+
+    if (req.body.categoryName && req.body.categoryName !== "") {
+      req.body.categoryId = await categoryData.getByName(req.body.categoryName);
+    }
+
+    if (req.body.subCategoryName && req.body.subCategoryName !== "") {
+      req.body.subCategoryId = await subCategoryData.getByName(req.body.subCategoryName);
+    }
 
     const webinar = await webinarData.create(req.body);
     return res.status(201).json(responseBody("Webinar created", null, webinar));
