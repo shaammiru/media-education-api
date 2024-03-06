@@ -60,6 +60,9 @@ const create = async (data: any) => {
     });
 
     return webinar;
+  }, {
+    maxWait: 5000,
+    timeout: 10000,
   });
 
   return webinar;
