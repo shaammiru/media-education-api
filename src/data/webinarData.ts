@@ -89,6 +89,27 @@ const updateById = async (id: string, data: any) => {
 
     if (!webinar) return;
 
+    if (!data.categoryId) {
+      const newCategory = await prismaTransaction.category.create({
+        data: {
+          name: data.categoryName,
+        }
+      });
+      data.categoryId = newCategory.id;
+    }
+
+    if (!data.subCategoryId) {
+      const newSubCategory = await prismaTransaction.subCategory.create({
+        data: {
+          name: data.subCategoryName,
+        }
+      });
+      data.subCategoryId = newSubCategory.id;
+    }
+
+    delete data.categoryName;
+    delete data.subCategoryName;
+
     if (data.price) {
       const webinarHistory = await prismaTransaction.webinarHistory.create({
         data: {
@@ -125,6 +146,9 @@ const updateById = async (id: string, data: any) => {
     });
 
     return webinar;
+  }, {
+    maxWait: 5000,
+    timeout: 10000,
   });
 
   return webinar;
