@@ -72,6 +72,13 @@ const getById = async (id: string) => {
     where: {
       id: id,
     },
+    include: {
+      webinarHistories: true, // Include webinarHistories relation
+      carts: true, // Include carts relation
+      lastWebinarHistory: true, // Include lastWebinarHistory relation
+      category: true, // Include category relation
+      subCategory: true, // Include subCategory relation
+    },
   });
 
   if (!webinar) return;
