@@ -27,10 +27,10 @@ const webinarUpdateSchema = joi.object({
   eventStatus: joi.string().valid(...eventStatusEnum),
   maxAttendees: joi.number().integer(),
   price: joi.number().positive(),
-  categoryName: joi.string(),
-  categoryId: joi.string().uuid({ version: "uuidv4" }),
-  subCategoryName: joi.string(),
-  subCategoryId: joi.string().uuid({ version: "uuidv4" }),
+  categoryName: joi.string().allow(null),
+  categoryId: joi.string().uuid({ version: "uuidv4" }).allow(""),
+  subCategoryName: joi.string().allow(null),
+  subCategoryId: joi.string().uuid({ version: "uuidv4" }).allow(""),
 });
 
 export { webinarSchema, webinarUpdateSchema };
