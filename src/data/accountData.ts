@@ -59,4 +59,14 @@ const getByEmail = async (email: string) => {
   return account;
 };
 
-export default { create, list, getById, updateById, deleteById, getByEmail };
+const listAdmin = async () => {
+  const accounts = await prisma.account.findMany({
+    where: {
+      role: 'ADMIN',
+    }
+  });
+
+  return accounts;
+};
+
+export default { create, list, getById, updateById, deleteById, getByEmail, listAdmin };

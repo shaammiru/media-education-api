@@ -59,9 +59,9 @@ const updateById = async (req: Request, res: Response, next: NextFunction) => {
     if (req.file) {
       const bannerUrl = await s3.upload(req.file, "webinar/banner");
       
-      if(bannerUrl){
-        await s3.remove(req.body.banner);
-      }
+      // if(bannerUrl){
+      //   await s3.remove(req.body.banner);
+      // }
 
       req.body.banner = bannerUrl;
     }
