@@ -14,6 +14,7 @@ import {
 const router = Router();
 
 router.use(verifyToken);
+router.get("/admin", listAdmin);
 
 router.param("id", validateParams());
 
@@ -23,6 +24,6 @@ router.get("/:id", getById);
 router.put("/:id", validateBody(accountUpdateSchema), updateById);
 router.delete("/:id", deleteById);
 
-router.get("/admin", listAdmin);
+
 
 export default router;

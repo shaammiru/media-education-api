@@ -55,6 +55,7 @@ const deleteById = async (req: Request, res: Response, next: NextFunction) => {
 
 const listAdmin = async (req: Request, res: Response, next: NextFunction) => {
   try {
+    console.log("here");
     const accounts = await accountData.listAdmin();
     return res.status(200).json(responseBody("OK", null, accounts));
   } catch (error) {
