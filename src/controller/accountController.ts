@@ -1,6 +1,7 @@
 import { NextFunction, Request, Response } from "express";
 import accountData from "../data/accountData";
 import responseBody from "../utility/responseBody";
+import { Role } from "@prisma/client";
 
 const create = async (req: Request, res: Response, next: NextFunction) => {
   try {
@@ -13,7 +14,17 @@ const create = async (req: Request, res: Response, next: NextFunction) => {
 
 const list = async (req: Request, res: Response, next: NextFunction) => {
   try {
-    const accounts = await accountData.list();
+    if (!req.query.role) {
+      throw new Error("You must specify a role");
+    }
+
+    const role: Role = req.query.role as Role;
+
+    if (!Object.values(Role).includes(role)) {
+      throw new Error("Invalid role specified");
+    }
+
+    const accounts = await accountData.list(role);
     return res.status(200).json(responseBody("OK", null, accounts));
   } catch (error) {
     next(error);
