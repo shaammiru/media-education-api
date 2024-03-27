@@ -88,4 +88,19 @@ const getCurrentUser = (req: any, res: Response, next: NextFunction) => {
   }
 };
 
-export { register, registerAdmin, login, logout, getCurrentUser };
+const checkValidToken = (req: any, res: Response, next: NextFunction) => {
+  try {
+    return res.status(200).json(responseBody("OK", null, null));
+  } catch (error) {
+    next(error);
+  }
+};
+
+export {
+  register,
+  registerAdmin,
+  login,
+  logout,
+  getCurrentUser,
+  checkValidToken,
+};
