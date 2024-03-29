@@ -8,7 +8,7 @@ import {
   getById,
   updateById,
   deleteById,
-  listAdmin
+  listAdmin,
 } from "../controller/accountController";
 
 const router = Router();
@@ -23,7 +23,5 @@ router.get("/", list);
 router.get("/:id", getById);
 router.put("/:id", validateBody(accountUpdateSchema), updateById);
 router.delete("/:id", deleteById);
-
-
 
 export default router;
