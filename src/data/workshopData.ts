@@ -4,7 +4,7 @@ import s3 from "../utility/awsS3";
 const prisma = new PrismaClient();
 
 const create = async (data: any) => {
-  const webinar = await prisma.$transaction(
+  const workshop = await prisma.$transaction(
     async (prismaTransaction) => {
       if (!data.categoryId) {
         const newCategory = await prismaTransaction.category.create({
@@ -27,7 +27,7 @@ const create = async (data: any) => {
       delete data.categoryName;
       delete data.subCategoryName;
 
-      const webinarHistory = await prismaTransaction.webinarHistory.create({
+      const workshopHistory = await prismaTransaction.workshopHistory.create({
         data: {
           price: data.price,
         },
@@ -35,23 +35,23 @@ const create = async (data: any) => {
 
       delete data.price;
 
-      const webinar = await prismaTransaction.webinar.create({
+      const workshop = await prismaTransaction.workshop.create({
         data: {
-          lastWebinarHistoryId: webinarHistory.id,
+          lastWorkshopHistoryId: workshopHistory.id,
           ...data,
         },
       });
 
-      await prismaTransaction.webinarHistory.update({
+      await prismaTransaction.workshopHistory.update({
         where: {
-          id: webinarHistory.id,
+          id: workshopHistory.id,
         },
         data: {
-          webinarId: webinar.id,
+          workshopId: workshop.id,
         },
       });
 
-      return webinar;
+      return workshop;
     },
     {
       maxWait: 5000,
@@ -59,46 +59,46 @@ const create = async (data: any) => {
     }
   );
 
-  return webinar;
+  return workshop;
 };
 
 const list = async () => {
-  const webinars = await prisma.webinar.findMany();
+  const workshops = await prisma.workshop.findMany();
 
-  return webinars;
+  return workshops;
 };
 
 const getById = async (id: string) => {
-  const webinar = await prisma.webinar.findUnique({
+  const workshop = await prisma.workshop.findUnique({
     where: {
       id: id,
     },
     include: {
-      webinarHistories: true, // Include webinarHistories relation
-      carts: true, // Include carts relation
-      lastWebinarHistory: true, // Include lastWebinarHistory relation
-      category: true, // Include category relation
-      subCategory: true, // Include subCategory relation
+      workshopHistories: true,
+      carts: true,
+      lastWorkshopHistory: true,
+      category: true,
+      subCategory: true,
     },
   });
 
-  if (!webinar) return;
+  if (!workshop) return;
 
-  return webinar;
+  return workshop;
 };
 
 const updateById = async (id: string, data: any) => {
-  const webinar = await prisma.$transaction(
+  const workshop = await prisma.$transaction(
     async (prismaTransaction) => {
-      let webinar = await prismaTransaction.webinar.findUnique({
+      let workshop = await prismaTransaction.workshop.findUnique({
         where: {
           id: id,
         },
       });
 
-      if (!webinar) return;
+      if (!workshop) return;
 
-      if (!data.categoryId) {
+      if (data.categoryName) {
         const newCategory = await prismaTransaction.category.create({
           data: {
             name: data.categoryName,
@@ -107,7 +107,7 @@ const updateById = async (id: string, data: any) => {
         data.categoryId = newCategory.id;
       }
 
-      if (!data.subCategoryId) {
+      if (data.subCategoryName) {
         const newSubCategory = await prismaTransaction.subCategory.create({
           data: {
             name: data.subCategoryName,
@@ -120,32 +120,32 @@ const updateById = async (id: string, data: any) => {
       delete data.subCategoryName;
 
       if (data.price) {
-        const webinarHistory = await prismaTransaction.webinarHistory.create({
+        const workshopHistory = await prismaTransaction.workshopHistory.create({
           data: {
-            webinarId: id,
+            workshopId: id,
             price: data.price,
           },
         });
 
         delete data.price;
-        await s3.remove(webinar.banner);
+        await s3.remove(workshop.banner);
 
-        const updatedWebinar = await prismaTransaction.webinar.update({
+        const updatedWorkshop = await prismaTransaction.workshop.update({
           where: {
             id: id,
           },
           data: {
-            lastWebinarHistoryId: webinarHistory.id,
+            lastWorkshopHistoryId: workshopHistory.id,
             ...data,
           },
         });
 
-        return updatedWebinar;
+        return updatedWorkshop;
       }
 
-      await s3.remove(webinar.banner);
+      await s3.remove(workshop.banner);
 
-      webinar = await prismaTransaction.webinar.update({
+      workshop = await prismaTransaction.workshop.update({
         where: {
           id: id,
         },
@@ -154,7 +154,7 @@ const updateById = async (id: string, data: any) => {
         },
       });
 
-      return webinar;
+      return workshop;
     },
     {
       maxWait: 5000,
@@ -162,23 +162,23 @@ const updateById = async (id: string, data: any) => {
     }
   );
 
-  return webinar;
+  return workshop;
 };
 
 const deleteById = async (id: string) => {
-  const webinar = await prisma.$transaction(async (prismaTransaction) => {
-    const webinar = await prismaTransaction.webinar.delete({
+  const workshop = await prisma.$transaction(async (prismaTransaction) => {
+    const workshop = await prismaTransaction.workshop.delete({
       where: {
         id: id,
       },
     });
 
-    await s3.remove(webinar.banner);
+    await s3.remove(workshop.banner);
 
-    return webinar;
+    return workshop;
   });
 
-  return webinar;
+  return workshop;
 };
 
 export default { create, list, getById, updateById, deleteById };

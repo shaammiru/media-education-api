@@ -48,6 +48,11 @@ enum EventStatus {
   ONLINE
 }
 
+enum WorkshopStatus {
+  LIVE
+  PLAYBACK
+}
+
 model Category {
   id        String   @id @default(uuid()) @db.Uuid
   name      String   @unique
@@ -55,7 +60,8 @@ model Category {
 
   // Incoming Relations
   // One to Many
-  webinars Webinar[] @relation("webinars.category_id_TO_categories")
+  webinars Webinar[]  @relation("webinars.category_id_TO_categories")
+  workshop Workshop[] @relation("workshops.category_id_TO_categories")
 
   @@map("categories")
 }
@@ -67,7 +73,8 @@ model SubCategory {
 
   // Incoming Relations
   // One to Many
-  webinars Webinar[] @relation("webinars.sub_category_id_TO_sub_categories")
+  webinars Webinar[]  @relation("webinars.sub_category_id_TO_sub_categories")
+  workshop Workshop[] @relation("workshops.sub_category_id_TO_sub_categories")
 
   @@map("sub_categories")
 }
@@ -121,6 +128,55 @@ model WebinarHistory {
   @@map("webinar_histories")
 }
 
+model Workshop {
+  id                    String         @id @default(uuid()) @db.Uuid
+  title                 String
+  banner                String
+  description           String
+  instructor            String
+  status                WorkshopStatus
+  startTime             DateTime?      @map("start_time") @db.Timestamptz()
+  endTime               DateTime?      @map("end_time") @db.Timestamptz()
+  lastWorkshopHistoryId String         @unique @map("last_workshop_history_id") @db.Uuid
+  certificate           String?
+  categoryId            String?        @map("category_id") @db.Uuid
+  subCategoryId         String?        @map("sub_category_id") @db.Uuid
+  createdAt             DateTime       @default(now()) @map("created_at") @db.Timestamptz()
+  updatedAt             DateTime       @default(now()) @updatedAt @map("updated_at") @db.Timestamptz()
+
+  // Incoming Relations
+  // One to Many
+  workshopHistories WorkshopHistory[] @relation("workshop_histories.workshop_id_TO_workshops")
+  carts             Cart[]            @relation("carts.workshop_id_TO_workshops")
+
+  // Outgoing Relations
+  // One to One
+  lastWorkshopHistory WorkshopHistory @relation("workshops.last_workshop_history_id_TO_workshop_histories", fields: [lastWorkshopHistoryId], references: [id], onUpdate: Restrict, onDelete: Restrict)
+  // Many to One
+  category            Category?       @relation("workshops.category_id_TO_categories", fields: [categoryId], references: [id], onUpdate: SetNull, onDelete: SetNull)
+  subCategory         SubCategory?    @relation("workshops.sub_category_id_TO_sub_categories", fields: [subCategoryId], references: [id], onUpdate: SetNull, onDelete: SetNull)
+
+  @@map("workshops")
+}
+
+model WorkshopHistory {
+  id         String   @id @default(uuid()) @db.Uuid
+  price      Decimal  @db.Decimal()
+  workshopId String?  @map("webinar_id") @db.Uuid
+  createdAt  DateTime @default(now()) @map("created_at") @db.Timestamptz()
+  updatedAt  DateTime @default(now()) @updatedAt @map("updated_at") @db.Timestamptz()
+
+  // Incoming Relations
+  // One to One
+  lastWorkshop Workshop? @relation("workshops.last_workshop_history_id_TO_workshop_histories")
+
+  // Outgoing Relations
+  // Many to One
+  workshop Workshop? @relation("workshop_histories.workshop_id_TO_workshops", fields: [workshopId], references: [id], onUpdate: SetNull, onDelete: SetNull)
+
+  @@map("workshop_histories")
+}
+
 enum CartType {
   WEBINAR
   WORKSHOP
@@ -128,17 +184,19 @@ enum CartType {
 }
 
 model Cart {
-  id        String   @id @default(uuid()) @db.Uuid
-  type      CartType @map("type")
-  accountId String   @map("account_id") @db.Uuid
-  productId String?  @map("product_id") @db.Uuid
-  createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz()
-  updatedAt DateTime @default(now()) @updatedAt @map("updated_at") @db.Timestamptz()
+  id         String   @id @default(uuid()) @db.Uuid
+  type       CartType @map("type")
+  accountId  String   @map("account_id") @db.Uuid
+  webinarId  String?  @map("webinar_id") @db.Uuid
+  workshopId String?  @map("workshop_id") @db.Uuid
+  createdAt  DateTime @default(now()) @map("created_at") @db.Timestamptz()
+  updatedAt  DateTime @default(now()) @updatedAt @map("updated_at") @db.Timestamptz()
 
   // Outgoing Relations
   // Many To One
-  account Account  @relation("carts.account_id_TO_accounts", fields: [accountId], references: [id], onUpdate: NoAction, onDelete: Cascade)
-  webinar Webinar? @relation("carts.product_id_TO_webinars", fields: [productId], references: [id], onUpdate: NoAction, onDelete: SetNull)
+  account  Account   @relation("carts.account_id_TO_accounts", fields: [accountId], references: [id], onUpdate: NoAction, onDelete: Cascade)
+  webinar  Webinar?  @relation("carts.product_id_TO_webinars", fields: [webinarId], references: [id], onUpdate: NoAction, onDelete: SetNull)
+  workshop Workshop? @relation("carts.workshop_id_TO_workshops", fields: [workshopId], references: [id])
 
   @@map("carts")
 }
