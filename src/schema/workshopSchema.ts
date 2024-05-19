@@ -27,10 +27,10 @@ const workshopUpdateSchema = joi.object({
   startTime: joi.date().iso(),
   endTime: joi.date().iso(),
   price: joi.number().positive(),
-  categoryName: joi.string().allow(null),
-  categoryId: joi.string().uuid({ version: "uuidv4" }).allow(""),
-  subCategoryName: joi.string().allow(null),
-  subCategoryId: joi.string().uuid({ version: "uuidv4" }).allow(""),
+  categoryName: joi.string(),
+  categoryId: joi.string().uuid({ version: "uuidv4" }),
+  subCategoryName: joi.string(),
+  subCategoryId: joi.string().uuid({ version: "uuidv4" }),
 });
 
 export { workshopSchema, workshopUpdateSchema };
