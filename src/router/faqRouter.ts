@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { verifyToken } from "../middleware/auth";
+import { verifyToken, verifyAdmin } from "../middleware/auth";
 import { validateBody, validateParams } from "../middleware/requestValidator";
 import { faqSchema, faqUpdateSchema } from "../schema/faqSchema";
 import {
@@ -12,7 +12,7 @@ import {
 
 const router = Router();
 
-router.use(verifyToken);
+router.use(verifyToken, verifyAdmin);
 
 router.param("id", validateParams());
 

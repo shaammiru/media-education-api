@@ -51,4 +51,20 @@ const verifyToken = (req: any, res: Response, next: NextFunction) => {
   }
 };
 
-export { hashPassword, comparePassword, generateToken, verifyToken };
+const verifyAdmin = (req: any, res: Response, next: NextFunction) => {
+  if (req.user.role !== "ADMIN") {
+    return res.status(403).json({
+      error: "Forbidden",
+    });
+  }
+
+  next();
+};
+
+export {
+  hashPassword,
+  comparePassword,
+  generateToken,
+  verifyToken,
+  verifyAdmin,
+};
