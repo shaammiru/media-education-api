@@ -6,6 +6,7 @@ import subCategoryRouter from "./subCategoryRouter";
 import webinarRouter from "./webinarRouter";
 import workshopRouter from "./workshopRouter";
 import cartRouter from "./cartRouter";
+import faqRouter from "./faqRouter";
 
 const router = Router();
 
@@ -16,5 +17,6 @@ router.use("/sub-categories", subCategoryRouter);
 router.use("/webinars", webinarRouter);
 router.use("/workshops", workshopRouter);
 router.use("/carts", cartRouter);
+router.use("/faqs", faqRouter);
 
 export default router;

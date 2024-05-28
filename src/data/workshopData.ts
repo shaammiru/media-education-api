@@ -181,4 +181,24 @@ const deleteById = async (id: string) => {
   return workshop;
 };
 
-export default { create, list, getById, updateById, deleteById };
+const uploadPlayback = async (id: string, url: string) => {
+  const workshop = await prisma.workshop.update({
+    where: {
+      id: id,
+    },
+    data: {
+      playbackUrl: url,
+    },
+  });
+
+  return workshop;
+};
+
+export default {
+  create,
+  list,
+  getById,
+  updateById,
+  deleteById,
+  uploadPlayback,
+};

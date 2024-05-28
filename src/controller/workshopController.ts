@@ -65,9 +65,9 @@ const updateById = async (req: Request, res: Response, next: NextFunction) => {
     if (req.file) {
       const bannerUrl = await s3.upload(req.file, "workshop/banner");
 
-      // if(bannerUrl){
-      //   await s3.remove(req.body.banner);
-      // }
+      if (bannerUrl) {
+        await s3.remove(req.body.banner);
+      }
 
       req.body.banner = bannerUrl;
     }
@@ -105,4 +105,26 @@ const deleteById = async (req: Request, res: Response, next: NextFunction) => {
   }
 };
 
-export { create, list, getById, updateById, deleteById };
+const uploadPlayback = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    if (!req.file) {
+      return res
+        .status(400)
+        .json(responseBody("Playback file required", null, null));
+    }
+
+    const playbackUrl = await s3.upload(req.file, "workshop/playback");
+    const workshop = await workshopData.updateById(req.params.id, playbackUrl);
+    return res
+      .status(200)
+      .json(responseBody("Playback uploaded", null, workshop));
+  } catch (error) {
+    next(error);
+  }
+};
+
+export { create, list, getById, updateById, deleteById, uploadPlayback };

@@ -138,6 +138,7 @@ model Workshop {
   startTime             DateTime?      @map("start_time") @db.Timestamptz()
   endTime               DateTime?      @map("end_time") @db.Timestamptz()
   lastWorkshopHistoryId String         @unique @map("last_workshop_history_id") @db.Uuid
+  playbackUrl           String?        @map("playback_url")
   certificate           String?
   categoryId            String?        @map("category_id") @db.Uuid
   subCategoryId         String?        @map("sub_category_id") @db.Uuid
@@ -199,4 +200,14 @@ model Cart {
   workshop Workshop? @relation("carts.workshop_id_TO_workshops", fields: [workshopId], references: [id])
 
   @@map("carts")
+}
+
+model Faq {
+  id        String   @id @default(uuid()) @db.Uuid
+  question  String
+  answer    String
+  icon      String
+  createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz()
+
+  @@map("faqs")
 }

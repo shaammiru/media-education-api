@@ -1,6 +1,6 @@
 import { Router } from "express";
 import { verifyToken } from "../middleware/auth";
-import { imageUpload } from "../middleware/multer";
+import { imageUpload, videoUpload } from "../middleware/multer";
 import { workshopSchema, workshopUpdateSchema } from "../schema/workshopSchema";
 import {
   validateBody,
@@ -14,6 +14,7 @@ import {
   getById,
   updateById,
   deleteById,
+  uploadPlayback,
 } from "../controller/workshopController";
 
 const router = Router();
@@ -39,5 +40,11 @@ router.put(
   updateById
 );
 router.delete("/:id", verifyToken, deleteById);
+router.put(
+  "/:id/playback",
+  verifyToken,
+  videoUpload.single("playback"),
+  uploadPlayback
+);
 
 export default router;

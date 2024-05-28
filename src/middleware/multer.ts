@@ -19,10 +19,34 @@ const imageFilter = (
   }
 };
 
+const videoFilter = (
+  req: Request,
+  file: Express.Multer.File,
+  cb: multer.FileFilterCallback
+) => {
+  if (
+    file.mimetype === "video/mp4" ||
+    file.mimetype === "video/mpeg" ||
+    file.mimetype === "video/quicktime"
+  ) {
+    cb(null, true);
+  } else {
+    cb(
+      new multer.MulterError("LIMIT_UNEXPECTED_FILE", "File type not allowed")
+    );
+  }
+};
+
 const imageUpload = multer({
   storage: multer.memoryStorage(),
   fileFilter: imageFilter,
   limits: { fileSize: 10 * 1024 * 1024 },
 });
 
-export { imageUpload };
+const videoUpload = multer({
+  storage: multer.memoryStorage(),
+  fileFilter: videoFilter,
+  limits: { fileSize: 500 * 1024 * 1024 },
+});
+
+export { imageUpload, videoUpload };
