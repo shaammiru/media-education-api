@@ -10,12 +10,18 @@ const create = async (data: any) => {
   return account;
 };
 
-const list = async (role: Role) => {
-  const accounts = await prisma.account.findMany({
-    where: {
-      role: role,
-    },
-  });
+const list = async (role: Role | null) => {
+  if (role) {
+    const accounts = await prisma.account.findMany({
+      where: {
+        role: role,
+      },
+    });
+
+    return accounts;
+  }
+
+  const accounts = await prisma.account.findMany();
 
   return accounts;
 };

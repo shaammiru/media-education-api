@@ -14,17 +14,18 @@ const create = async (req: Request, res: Response, next: NextFunction) => {
 
 const list = async (req: Request, res: Response, next: NextFunction) => {
   try {
-    if (!req.query.role) {
-      throw new Error("You must specify a role");
+    if (req.query.role) {
+      const role: Role = req.query.role as Role;
+
+      if (!Object.values(Role).includes(role)) {
+        throw new Error("Invalid role specified");
+      }
+
+      const accounts = await accountData.list(role);
+      return res.status(200).json(responseBody("OK", null, accounts));
     }
 
-    const role: Role = req.query.role as Role;
-
-    if (!Object.values(Role).includes(role)) {
-      throw new Error("Invalid role specified");
-    }
-
-    const accounts = await accountData.list(role);
+    const accounts = await accountData.list(null);
     return res.status(200).json(responseBody("OK", null, accounts));
   } catch (error) {
     next(error);
@@ -66,7 +67,6 @@ const deleteById = async (req: Request, res: Response, next: NextFunction) => {
 
 const listAdmin = async (req: Request, res: Response, next: NextFunction) => {
   try {
-    console.log("here");
     const accounts = await accountData.listAdmin();
     return res.status(200).json(responseBody("OK", null, accounts));
   } catch (error) {
