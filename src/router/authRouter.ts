@@ -1,6 +1,10 @@
 import { Router } from "express";
 import { validateBody } from "../middleware/requestValidator";
-import { registerSchema, loginSchema } from "../schema/authSchema";
+import {
+  registerSchema,
+  loginSchema,
+  forgotPasswordSchema,
+} from "../schema/authSchema";
 import { verifyToken } from "../middleware/auth";
 import {
   register,
@@ -9,6 +13,8 @@ import {
   logout,
   getCurrentUser,
   checkValidToken,
+  forgotPassword,
+  resetPassword,
 } from "../controller/authController";
 
 const router = Router();
@@ -19,5 +25,11 @@ router.post("/login", validateBody(loginSchema), login);
 router.get("/logout", verifyToken, logout);
 router.get("/user", verifyToken, getCurrentUser);
 router.post("/verify-token", verifyToken, checkValidToken);
+router.post(
+  "/forgot-password",
+  validateBody(forgotPasswordSchema),
+  forgotPassword
+);
+router.post("/reset-password", resetPassword);
 
 export default router;

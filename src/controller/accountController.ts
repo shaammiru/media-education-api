@@ -74,4 +74,25 @@ const listAdmin = async (req: Request, res: Response, next: NextFunction) => {
   }
 };
 
-export { create, list, getById, updateById, deleteById, listAdmin };
+const updateProfile = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    const account = await accountData.updateById(req.params.id, req.body);
+    return res.status(200).json(responseBody("Profile updated", null, account));
+  } catch (error) {
+    next(error);
+  }
+};
+
+export {
+  create,
+  list,
+  getById,
+  updateById,
+  deleteById,
+  listAdmin,
+  updateProfile,
+};

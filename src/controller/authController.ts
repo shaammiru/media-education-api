@@ -96,6 +96,30 @@ const checkValidToken = (req: any, res: Response, next: NextFunction) => {
   }
 };
 
+const forgotPassword = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    // Logic here
+  } catch (error) {
+    next(error);
+  }
+};
+
+const resetPassword = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    // Logic here
+  } catch (error) {
+    next(error);
+  }
+};
+
 export {
   register,
   registerAdmin,
@@ -103,4 +127,6 @@ export {
   logout,
   getCurrentUser,
   checkValidToken,
+  forgotPassword,
+  resetPassword,
 };

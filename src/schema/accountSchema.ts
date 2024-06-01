@@ -18,7 +18,7 @@ const accountSchema = joi.object({
   phone: joi.string().regex(/^62\d{9,12}$/),
   address: joi.string(),
   birthdate: joi.date().iso(),
-  company: joi.string(),
+  organization: joi.string(),
   gender: joi.string().valid(...genderEnum),
 });
 
@@ -31,8 +31,21 @@ const accountUpdateSchema = joi.object({
   phone: joi.string().regex(/^62\d{9,12}$/),
   address: joi.string(),
   birthdate: joi.date().iso(),
-  company: joi.string(),
+  organization: joi.string(),
+  university: joi.string(),
   gender: joi.string().valid(...genderEnum),
 });
 
-export { accountSchema, accountUpdateSchema };
+const accountUpdateProfileSchema = joi.object({
+  fullname: joi.string(),
+  username: joi.string().regex(/^[a-zA-Z0-9_-]+$/),
+  email: joi.string().email(),
+  phone: joi.string().regex(/^62\d{9,12}$/),
+  address: joi.string(),
+  birthdate: joi.date().iso(),
+  organization: joi.string(),
+  university: joi.string(),
+  gender: joi.string().valid(...genderEnum),
+});
+
+export { accountSchema, accountUpdateSchema, accountUpdateProfileSchema };
