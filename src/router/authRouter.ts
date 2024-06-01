@@ -4,6 +4,7 @@ import {
   registerSchema,
   loginSchema,
   forgotPasswordSchema,
+  resetPasswordSchema,
 } from "../schema/authSchema";
 import { verifyToken } from "../middleware/auth";
 import {
@@ -30,6 +31,10 @@ router.post(
   validateBody(forgotPasswordSchema),
   forgotPassword
 );
-router.post("/reset-password", resetPassword);
+router.post(
+  "/reset-password/:token",
+  validateBody(resetPasswordSchema),
+  resetPassword
+);
 
 export default router;

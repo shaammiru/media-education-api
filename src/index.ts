@@ -9,6 +9,7 @@ import swaggerDocument from "../docs/swagger.json";
 
 // Error handling middleware
 import {
+  jsonErrorHandler,
   joiErrorHandler,
   prismaErrorHandler,
   errorHandler,
@@ -41,6 +42,7 @@ app.use(
 );
 
 // Load error handler middlewares
+app.use(jsonErrorHandler);
 app.use(joiErrorHandler);
 app.use(prismaErrorHandler);
 app.use(multerErrorHandler);

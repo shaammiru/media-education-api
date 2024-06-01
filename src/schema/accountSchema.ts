@@ -19,6 +19,7 @@ const accountSchema = joi.object({
   address: joi.string(),
   birthdate: joi.date().iso(),
   organization: joi.string(),
+  university: joi.string(),
   gender: joi.string().valid(...genderEnum),
 });
 

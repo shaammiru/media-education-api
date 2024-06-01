@@ -4,6 +4,20 @@ import { ValidationError } from "joi";
 import { MulterError } from "multer";
 import responseBody from "../utility/responseBody";
 
+const jsonErrorHandler = (
+  err: unknown,
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  if (err instanceof SyntaxError) {
+    return res
+      .status(400)
+      .json(responseBody("Invalid JSON format", err.message, null));
+  }
+  next(err);
+};
+
 const joiErrorHandler = (
   err: unknown,
   req: Request,
@@ -84,6 +98,7 @@ const errorHandler = (
 };
 
 export {
+  jsonErrorHandler,
   joiErrorHandler,
   prismaErrorHandler,
   multerErrorHandler,
