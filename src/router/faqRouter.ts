@@ -17,8 +17,8 @@ router.get("/", list);
 router.get("/:id", getById);
 
 router.use(verifyToken, verifyAdmin);
-router.post("/", validateBody(faqSchema), create);
 
+router.post("/", validateBody(faqSchema), create);
 router.put("/:id", validateBody(faqUpdateSchema), updateById);
 router.delete("/:id", deleteById);
 

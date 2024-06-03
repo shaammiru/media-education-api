@@ -6,6 +6,7 @@ import {
   generateToken,
   hashPassword,
 } from "../middleware/auth";
+import crypto from "crypto";
 
 const register = async (req: Request, res: Response, next: NextFunction) => {
   try {
@@ -102,7 +103,35 @@ const forgotPassword = async (
   next: NextFunction
 ) => {
   try {
-    // Logic here
+    const user = await accountData.getByEmail(req.body.email);
+
+    if (!user) {
+      return res
+        .status(404)
+        .json(responseBody("Account not found", null, null));
+    }
+
+    const resetToken = crypto.randomBytes(32).toString("hex");
+    const passwordResetToken = crypto
+      .createHash("sha256")
+      .update(resetToken)
+      .digest("hex");
+    const passwordResetExpiry = new Date(Date.now() + 10 * 60 * 1000);
+
+    await accountData.updateById(user.id, {
+      passwordResetToken,
+      passwordResetExpiry,
+    });
+
+    // Send email here
+    // TODO: Implement email sending
+
+    return res.status(200).json(
+      responseBody("Reset password email sent", null, {
+        resetToken,
+        passwordResetExpiry,
+      })
+    );
   } catch (error) {
     next(error);
   }

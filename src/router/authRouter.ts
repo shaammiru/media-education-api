@@ -23,9 +23,6 @@ const router = Router();
 router.post("/register", validateBody(registerSchema), register);
 router.post("/register/admin", validateBody(registerSchema), registerAdmin);
 router.post("/login", validateBody(loginSchema), login);
-router.get("/logout", verifyToken, logout);
-router.get("/user", verifyToken, getCurrentUser);
-router.post("/verify-token", verifyToken, checkValidToken);
 router.post(
   "/forgot-password",
   validateBody(forgotPasswordSchema),
@@ -36,5 +33,11 @@ router.post(
   validateBody(resetPasswordSchema),
   resetPassword
 );
+
+router.use(verifyToken);
+
+router.get("/logout", logout);
+router.get("/user", getCurrentUser);
+router.post("/verify-token", checkValidToken);
 
 export default router;
