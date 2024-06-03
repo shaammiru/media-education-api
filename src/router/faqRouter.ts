@@ -12,13 +12,13 @@ import {
 
 const router = Router();
 
-router.use(verifyToken, verifyAdmin);
-
 router.param("id", validateParams());
-
-router.post("/", validateBody(faqSchema), create);
 router.get("/", list);
 router.get("/:id", getById);
+
+router.use(verifyToken, verifyAdmin);
+router.post("/", validateBody(faqSchema), create);
+
 router.put("/:id", validateBody(faqUpdateSchema), updateById);
 router.delete("/:id", deleteById);
 
