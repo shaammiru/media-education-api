@@ -65,6 +65,7 @@ model Category {
   // One to Many
   webinars Webinar[]  @relation("webinars.category_id_TO_categories")
   workshop Workshop[] @relation("workshops.category_id_TO_categories")
+  training Training[] @relation("trainings.category_id_TO_categories")
 
   @@map("categories")
 }
@@ -78,6 +79,7 @@ model SubCategory {
   // One to Many
   webinars Webinar[]  @relation("webinars.sub_category_id_TO_sub_categories")
   workshop Workshop[] @relation("workshops.sub_category_id_TO_sub_categories")
+  training Training[] @relation("trainings.sub_category_id_TO_sub_categories")
 
   @@map("sub_categories")
 }
@@ -181,6 +183,53 @@ model WorkshopHistory {
   @@map("workshop_histories")
 }
 
+model Training {
+  id                    String    @id @default(uuid()) @db.Uuid
+  title                 String
+  banner                String
+  description           String
+  startTime             DateTime? @map("start_time") @db.Timestamptz()
+  endTime               DateTime? @map("end_time") @db.Timestamptz()
+  lastTrainingHistoryId String    @unique @map("last_training_history_id") @db.Uuid
+  categoryId            String?   @map("category_id") @db.Uuid
+  subCategoryId         String?   @map("sub_category_id") @db.Uuid
+  createdAt             DateTime  @default(now()) @map("created_at") @db.Timestamptz()
+  updatedAt             DateTime  @default(now()) @updatedAt @map("updated_at") @db.Timestamptz()
+
+  // Incoming Relations
+  // One to Many
+  trainingHistories TrainingHistory[] @relation("training_histories.training_id_TO_trainings")
+  carts             Cart[]            @relation("carts.training_id_TO_trainings")
+
+  // Outgoing Relations
+  // One to One
+  lastTrainingHistory TrainingHistory @relation("trainings.last_training_history_id_TO_training_histories", fields: [lastTrainingHistoryId], references: [id], onUpdate: Restrict, onDelete: Restrict)
+  // Many to One
+  category            Category?       @relation("trainings.category_id_TO_categories", fields: [categoryId], references: [id], onUpdate: SetNull, onDelete: SetNull)
+  subCategory         SubCategory?    @relation("trainings.sub_category_id_TO_sub_categories", fields: [subCategoryId], references: [id], onUpdate: SetNull, onDelete: SetNull)
+
+  @@map("trainings")
+}
+
+model TrainingHistory {
+  id         String   @id @default(uuid()) @db.Uuid
+  price      Decimal  @db.Decimal()
+  discount   Decimal? @db.Decimal()
+  trainingId String?  @map("training_id") @db.Uuid
+  createdAt  DateTime @default(now()) @map("created_at") @db.Timestamptz()
+  updatedAt  DateTime @default(now()) @updatedAt @map("updated_at") @db.Timestamptz()
+
+  // Incoming Relations
+  // One to One
+  lastTraining Training? @relation("trainings.last_training_history_id_TO_training_histories")
+
+  // Outgoing Relations
+  // Many to One
+  workshop Training? @relation("training_histories.training_id_TO_trainings", fields: [trainingId], references: [id], onUpdate: SetNull, onDelete: SetNull)
+
+  @@map("training_histories")
+}
+
 enum CartType {
   WEBINAR
   WORKSHOP
@@ -193,6 +242,7 @@ model Cart {
   accountId  String   @map("account_id") @db.Uuid
   webinarId  String?  @map("webinar_id") @db.Uuid
   workshopId String?  @map("workshop_id") @db.Uuid
+  trainingId String?  @map("training_id") @db.Uuid
   createdAt  DateTime @default(now()) @map("created_at") @db.Timestamptz()
   updatedAt  DateTime @default(now()) @updatedAt @map("updated_at") @db.Timestamptz()
 
@@ -201,6 +251,7 @@ model Cart {
   account  Account   @relation("carts.account_id_TO_accounts", fields: [accountId], references: [id], onUpdate: NoAction, onDelete: Cascade)
   webinar  Webinar?  @relation("carts.product_id_TO_webinars", fields: [webinarId], references: [id], onUpdate: NoAction, onDelete: SetNull)
   workshop Workshop? @relation("carts.workshop_id_TO_workshops", fields: [workshopId], references: [id])
+  training Training? @relation("carts.training_id_TO_trainings", fields: [trainingId], references: [id], onUpdate: NoAction, onDelete: SetNull)
 
   @@map("carts")
 }

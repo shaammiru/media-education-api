@@ -5,6 +5,7 @@ import categoryRouter from "./categoryRouter";
 import subCategoryRouter from "./subCategoryRouter";
 import webinarRouter from "./webinarRouter";
 import workshopRouter from "./workshopRouter";
+import trainingRouter from "./trainingRouter";
 import cartRouter from "./cartRouter";
 import faqRouter from "./faqRouter";
 
@@ -16,6 +17,7 @@ router.use("/categories", categoryRouter);
 router.use("/sub-categories", subCategoryRouter);
 router.use("/webinars", webinarRouter);
 router.use("/workshops", workshopRouter);
+router.use("/trainings", trainingRouter);
 router.use("/carts", cartRouter);
 router.use("/faqs", faqRouter);
 
