@@ -4,11 +4,41 @@ import s3 from "../utility/awsS3";
 const prisma = new PrismaClient();
 
 const create = async (data: any) => {
-  const training = await prisma.training.create({
-    data: {
-      ...data,
+  const training = await prisma.$transaction(
+    async (prismaTransaction) => {
+      const trainingHistory = await prismaTransaction.trainingHistory.create({
+        data: {
+          price: data.price,
+          discount: data.discount,
+        },
+      });
+
+      delete data.price;
+      delete data.discount;
+
+      const training = await prismaTransaction.training.create({
+        data: {
+          lastTrainingHistoryId: trainingHistory.id,
+          ...data,
+        },
+      });
+
+      await prismaTransaction.trainingHistory.update({
+        where: {
+          id: trainingHistory.id,
+        },
+        data: {
+          trainingId: training.id,
+        },
+      });
+
+      return training;
     },
-  });
+    {
+      maxWait: 5000,
+      timeout: 10000,
+    }
+  );
 
   return training;
 };
@@ -40,37 +70,27 @@ const updateById = async (id: string, data: any) => {
 
       if (!training) return;
 
-      if (data.categoryName) {
-        const newCategory = await prismaTransaction.category.create({
-          data: {
-            name: data.categoryName,
-          },
-        });
-        data.categoryId = newCategory.id;
+      if (data.banner) {
+        await s3.remove(training.banner);
       }
 
-      if (data.subCategoryName) {
-        const newSubCategory = await prismaTransaction.subCategory.create({
-          data: {
-            name: data.subCategoryName,
-          },
-        });
-        data.subCategoryId = newSubCategory.id;
-      }
-
-      delete data.categoryName;
-      delete data.subCategoryName;
+      const dataToUpdate = {} as any;
+      dataToUpdate.trainingId = id;
 
       if (data.price) {
-        const trainingHistory = await prismaTransaction.trainingHistory.create({
-          data: {
-            trainingId: id,
-            price: data.price,
-          },
-        });
-
+        dataToUpdate.price = data.price;
         delete data.price;
-        await s3.remove(training.banner);
+      }
+
+      if (data.discount) {
+        dataToUpdate.discount = data.discount;
+        delete data.discount;
+      }
+
+      if (dataToUpdate.price || dataToUpdate.discount) {
+        const trainingHistory = await prismaTransaction.trainingHistory.create({
+          data: dataToUpdate,
+        });
 
         const updatedTraining = await prismaTransaction.training.update({
           where: {
@@ -80,12 +100,13 @@ const updateById = async (id: string, data: any) => {
             lastTrainingHistoryId: trainingHistory.id,
             ...data,
           },
+          include: {
+            lastTrainingHistory: true,
+          },
         });
 
         return updatedTraining;
       }
-
-      await s3.remove(training.banner);
 
       training = await prismaTransaction.training.update({
         where: {
@@ -93,6 +114,9 @@ const updateById = async (id: string, data: any) => {
         },
         data: {
           ...data,
+        },
+        include: {
+          lastTrainingHistory: true,
         },
       });
 
