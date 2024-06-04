@@ -6,6 +6,7 @@ import {
   generateToken,
   hashPassword,
 } from "../middleware/auth";
+import email from "../utility/email";
 import crypto from "crypto";
 
 const register = async (req: Request, res: Response, next: NextFunction) => {
@@ -123,15 +124,19 @@ const forgotPassword = async (
       passwordResetExpiry,
     });
 
-    // Send email here
-    // TODO: Implement email sending
+    const resetURL = `${req.protocol}://${req.get(
+      "host"
+    )}/v1/auth/reset-password/${resetToken}`;
+    const message = `Forgot your password? Submit a POST request with your new password and token to: ${resetURL}.\n\nThis reset password link will be valid only for 10 minutes\n\nIf you didn't forget your password, please ignore this email!`;
+    await email.send({
+      email: user.email,
+      subject: "Edutrain Password Reset",
+      message,
+    });
 
-    return res.status(200).json(
-      responseBody("Reset password email sent", null, {
-        resetToken,
-        passwordResetExpiry,
-      })
-    );
+    return res
+      .status(200)
+      .json(responseBody("Reset password email sent", null, null));
   } catch (error) {
     next(error);
   }
