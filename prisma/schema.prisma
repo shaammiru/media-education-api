@@ -260,6 +260,7 @@ model Faq {
   id        String   @id @default(uuid()) @db.Uuid
   question  String
   answer    String
+  tag       String
   icon      String
   createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz()
 
