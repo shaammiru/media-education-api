@@ -10,14 +10,12 @@ const send = async (option: any) => {
     },
   });
 
-  const emailOptions = {
+  await transporter.sendMail({
     from: "Edutrain Support<support@edutrain.uinsgd.ac.id>",
     to: option.email,
     subject: option.subject,
-    text: option.message,
-  };
-
-  await transporter.sendMail(emailOptions);
+    html: option.htmlMessage,
+  });
 };
 
 export default {

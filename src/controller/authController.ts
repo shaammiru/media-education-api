@@ -124,14 +124,19 @@ const forgotPassword = async (
       passwordResetExpiry,
     });
 
-    const resetURL = `${req.protocol}://${req.get(
-      "host"
-    )}/v1/auth/reset-password/${resetToken}`;
-    const message = `Forgot your password? Submit a POST request with your new password and token to: ${resetURL}.\n\nThis reset password link will be valid only for 10 minutes\n\nIf you didn't forget your password, please ignore this email!`;
+    const protocol = req.protocol;
+    const host = req.get("host");
+    const resetURL = `${protocol}://${host}/v1/auth/reset-password/${resetToken}`;
+    const htmlMessage = `
+      <h1>Edutrain Password Reset</h1>
+      <p>Click the link below to reset your password</p>
+      <a href="${resetURL}" target="_blank">Reset Password</a>
+      <p>This link will expire in 10 minutes</p>
+      <p>If you did not request a password reset, please ignore this email</p>`;
     await email.send({
       email: user.email,
       subject: "Edutrain Password Reset",
-      message,
+      htmlMessage,
     });
 
     return res
