@@ -8,6 +8,7 @@ import workshopRouter from "./workshopRouter";
 import trainingRouter from "./trainingRouter";
 import cartRouter from "./cartRouter";
 import faqRouter from "./faqRouter";
+import videoRouter from "./videoRouter";
 
 const router = Router();
 
@@ -20,5 +21,6 @@ router.use("/workshops", workshopRouter);
 router.use("/trainings", trainingRouter);
 router.use("/carts", cartRouter);
 router.use("/faqs", faqRouter);
+router.use("/videos", videoRouter);
 
 export default router;

@@ -266,3 +266,11 @@ model Faq {
 
   @@map("faqs")
 }
+
+model Video {
+  id    String @id @default(uuid()) @db.Uuid
+  title String
+  url   String
+
+  @@map("videos")
+}
