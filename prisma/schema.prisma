@@ -118,6 +118,7 @@ model Webinar {
 model WebinarHistory {
   id        String   @id @default(uuid()) @db.Uuid
   price     Decimal  @db.Decimal()
+  discount  Decimal? @db.Decimal()
   webinarId String?  @map("webinar_id") @db.Uuid
   createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz()
   updatedAt DateTime @default(now()) @updatedAt @map("updated_at") @db.Timestamptz()
@@ -168,6 +169,7 @@ model Workshop {
 model WorkshopHistory {
   id         String   @id @default(uuid()) @db.Uuid
   price      Decimal  @db.Decimal()
+  discount   Decimal? @db.Decimal()
   workshopId String?  @map("webinar_id") @db.Uuid
   createdAt  DateTime @default(now()) @map("created_at") @db.Timestamptz()
   updatedAt  DateTime @default(now()) @updatedAt @map("updated_at") @db.Timestamptz()
