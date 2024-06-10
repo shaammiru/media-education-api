@@ -63,7 +63,14 @@ const create = async (data: any) => {
 };
 
 const list = async () => {
-  const workshops = await prisma.workshop.findMany();
+  const workshops = await prisma.workshop.findMany({
+    include: {
+      workshopHistories: true,
+      lastWorkshopHistory: true,
+      category: true,
+      subCategory: true,
+    },
+  });
 
   return workshops;
 };
@@ -75,7 +82,6 @@ const getById = async (id: string) => {
     },
     include: {
       workshopHistories: true,
-      carts: true,
       lastWorkshopHistory: true,
       category: true,
       subCategory: true,
@@ -120,6 +126,12 @@ const updateById = async (id: string, data: any) => {
             lastWorkshopHistoryId: workshopHistory.id,
             ...data,
           },
+          include: {
+            workshopHistories: true,
+            lastWorkshopHistory: true,
+            category: true,
+            subCategory: true,
+          },
         });
 
         return updatedWorkshop;
@@ -131,6 +143,12 @@ const updateById = async (id: string, data: any) => {
         },
         data: {
           ...data,
+        },
+        include: {
+          workshopHistories: true,
+          lastWorkshopHistory: true,
+          category: true,
+          subCategory: true,
         },
       });
 

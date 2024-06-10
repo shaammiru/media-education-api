@@ -12,17 +12,21 @@ const create = async (req: Request, res: Response, next: NextFunction) => {
     req.body.banner = bannerUrl;
 
     if (req.body.categoryName && req.body.categoryName !== "") {
-      req.body.categoryId = (await categoryData.getByName(req.body.categoryName))?.id;
+      req.body.categoryId = (
+        await categoryData.getByName(req.body.categoryName)
+      )?.id;
     }
 
     if (req.body.subCategoryName && req.body.subCategoryName !== "") {
-      req.body.subCategoryId = (await subCategoryData.getByName(req.body.subCategoryName))?.id;
+      req.body.subCategoryId = (
+        await subCategoryData.getByName(req.body.subCategoryName)
+      )?.id;
     }
 
     const webinar = await webinarData.create(req.body);
     return res.status(201).json(responseBody("Webinar created", null, webinar));
   } catch (error) {
-    if(bannerUrl !== ""){
+    if (bannerUrl !== "") {
       await s3.remove(bannerUrl);
     }
     next(error);
@@ -54,32 +58,48 @@ const getById = async (req: Request, res: Response, next: NextFunction) => {
 };
 
 const updateById = async (req: Request, res: Response, next: NextFunction) => {
-  let bannerUrl = "";
   try {
     if (req.file) {
       const bannerUrl = await s3.upload(req.file, "webinar/banner");
-      
-      // if(bannerUrl){
-      //   await s3.remove(req.body.banner);
-      // }
-
       req.body.banner = bannerUrl;
     }
 
-    if (req.body.categoryName && req.body.categoryName !== "") {
-      req.body.categoryId = (await categoryData.getByName(req.body.categoryName))?.id;
+    if (req.body.categoryName) {
+      const category = await categoryData.getByName(req.body.categoryName);
+
+      if (!category) {
+        const newCategory = await categoryData.create({
+          name: req.body.categoryName,
+        });
+
+        req.body.categoryId = newCategory.id;
+      } else {
+        req.body.categoryId = category.id;
+      }
     }
 
-    if (req.body.subCategoryName && req.body.subCategoryName !== "") {
-      req.body.subCategoryId = (await subCategoryData.getByName(req.body.subCategoryName))?.id;
+    if (req.body.subCategoryName) {
+      const subCategory = await subCategoryData.getByName(
+        req.body.subCategoryName
+      );
+
+      if (!subCategory) {
+        const newSubCategory = await subCategoryData.create({
+          name: req.body.subCategoryName,
+        });
+
+        req.body.subCategoryId = newSubCategory.id;
+      } else {
+        req.body.subCategoryId = subCategory.id;
+      }
     }
+
+    delete req.body.categoryName;
+    delete req.body.subCategoryName;
 
     const webinar = await webinarData.updateById(req.params.id, req.body);
     return res.status(200).json(responseBody("Webinar updated", null, webinar));
   } catch (error) {
-    if(bannerUrl !== ""){
-      await s3.remove(bannerUrl);
-    }
     next(error);
   }
 };

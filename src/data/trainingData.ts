@@ -44,7 +44,14 @@ const create = async (data: any) => {
 };
 
 const list = async () => {
-  const trainings = await prisma.training.findMany();
+  const trainings = await prisma.training.findMany({
+    include: {
+      trainingHistories: true,
+      lastTrainingHistory: true,
+      category: true,
+      subCategory: true,
+    },
+  });
 
   return trainings;
 };
@@ -53,6 +60,12 @@ const getById = async (id: string) => {
   const training = await prisma.training.findUnique({
     where: {
       id: id,
+    },
+    include: {
+      trainingHistories: true,
+      lastTrainingHistory: true,
+      category: true,
+      subCategory: true,
     },
   });
 
@@ -101,7 +114,10 @@ const updateById = async (id: string, data: any) => {
             ...data,
           },
           include: {
+            trainingHistories: true,
             lastTrainingHistory: true,
+            category: true,
+            subCategory: true,
           },
         });
 
@@ -116,7 +132,10 @@ const updateById = async (id: string, data: any) => {
           ...data,
         },
         include: {
+          trainingHistories: true,
           lastTrainingHistory: true,
+          category: true,
+          subCategory: true,
         },
       });
 

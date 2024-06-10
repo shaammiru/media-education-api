@@ -63,7 +63,14 @@ const create = async (data: any) => {
 };
 
 const list = async () => {
-  const webinars = await prisma.webinar.findMany();
+  const webinars = await prisma.webinar.findMany({
+    include: {
+      webinarHistories: true,
+      lastWebinarHistory: true,
+      category: true,
+      subCategory: true,
+    },
+  });
 
   return webinars;
 };
@@ -74,11 +81,10 @@ const getById = async (id: string) => {
       id: id,
     },
     include: {
-      webinarHistories: true, // Include webinarHistories relation
-      carts: true, // Include carts relation
-      lastWebinarHistory: true, // Include lastWebinarHistory relation
-      category: true, // Include category relation
-      subCategory: true, // Include subCategory relation
+      webinarHistories: true,
+      lastWebinarHistory: true,
+      category: true,
+      subCategory: true,
     },
   });
 
@@ -98,26 +104,9 @@ const updateById = async (id: string, data: any) => {
 
       if (!webinar) return;
 
-      if (!data.categoryId) {
-        const newCategory = await prismaTransaction.category.create({
-          data: {
-            name: data.categoryName,
-          },
-        });
-        data.categoryId = newCategory.id;
+      if (data.banner) {
+        await s3.remove(webinar.banner);
       }
-
-      if (!data.subCategoryId) {
-        const newSubCategory = await prismaTransaction.subCategory.create({
-          data: {
-            name: data.subCategoryName,
-          },
-        });
-        data.subCategoryId = newSubCategory.id;
-      }
-
-      delete data.categoryName;
-      delete data.subCategoryName;
 
       if (data.price) {
         const webinarHistory = await prismaTransaction.webinarHistory.create({
@@ -128,7 +117,6 @@ const updateById = async (id: string, data: any) => {
         });
 
         delete data.price;
-        await s3.remove(webinar.banner);
 
         const updatedWebinar = await prismaTransaction.webinar.update({
           where: {
@@ -138,12 +126,16 @@ const updateById = async (id: string, data: any) => {
             lastWebinarHistoryId: webinarHistory.id,
             ...data,
           },
+          include: {
+            webinarHistories: true,
+            lastWebinarHistory: true,
+            category: true,
+            subCategory: true,
+          },
         });
 
         return updatedWebinar;
       }
-
-      await s3.remove(webinar.banner);
 
       webinar = await prismaTransaction.webinar.update({
         where: {
@@ -151,6 +143,12 @@ const updateById = async (id: string, data: any) => {
         },
         data: {
           ...data,
+        },
+        include: {
+          webinarHistories: true,
+          lastWebinarHistory: true,
+          category: true,
+          subCategory: true,
         },
       });
 
