@@ -60,38 +60,50 @@ const getById = async (req: Request, res: Response, next: NextFunction) => {
 };
 
 const updateById = async (req: Request, res: Response, next: NextFunction) => {
-  let bannerUrl = "";
   try {
     if (req.file) {
       const bannerUrl = await s3.upload(req.file, "workshop/banner");
-
-      if (bannerUrl) {
-        await s3.remove(req.body.banner);
-      }
-
       req.body.banner = bannerUrl;
     }
 
-    if (req.body.categoryName && req.body.categoryName !== "") {
-      req.body.categoryId = (
-        await categoryData.getByName(req.body.categoryName)
-      )?.id;
+    if (req.body.categoryName) {
+      const category = await categoryData.getByName(req.body.categoryName);
+
+      if (!category) {
+        const newCategory = await categoryData.create({
+          name: req.body.categoryName,
+        });
+
+        req.body.categoryId = newCategory.id;
+      } else {
+        req.body.categoryId = category.id;
+      }
     }
 
-    if (req.body.subCategoryName && req.body.subCategoryName !== "") {
-      req.body.subCategoryId = (
-        await subCategoryData.getByName(req.body.subCategoryName)
-      )?.id;
+    if (req.body.subCategoryName) {
+      const subCategory = await subCategoryData.getByName(
+        req.body.subCategoryName
+      );
+
+      if (!subCategory) {
+        const newSubCategory = await subCategoryData.create({
+          name: req.body.subCategoryName,
+        });
+
+        req.body.subCategoryId = newSubCategory.id;
+      } else {
+        req.body.subCategoryId = subCategory.id;
+      }
     }
 
-    const workshop = await workshopData.updateById(req.params.id, req.body);
+    delete req.body.categoryName;
+    delete req.body.subCategoryName;
+
+    const training = await workshopData.updateById(req.params.id, req.body);
     return res
       .status(200)
-      .json(responseBody("Workshop updated", null, workshop));
+      .json(responseBody("Workshop updated", null, training));
   } catch (error) {
-    if (bannerUrl !== "") {
-      await s3.remove(bannerUrl);
-    }
     next(error);
   }
 };

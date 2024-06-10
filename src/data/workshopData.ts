@@ -98,26 +98,9 @@ const updateById = async (id: string, data: any) => {
 
       if (!workshop) return;
 
-      if (data.categoryName) {
-        const newCategory = await prismaTransaction.category.create({
-          data: {
-            name: data.categoryName,
-          },
-        });
-        data.categoryId = newCategory.id;
+      if (data.banner) {
+        await s3.remove(workshop.banner);
       }
-
-      if (data.subCategoryName) {
-        const newSubCategory = await prismaTransaction.subCategory.create({
-          data: {
-            name: data.subCategoryName,
-          },
-        });
-        data.subCategoryId = newSubCategory.id;
-      }
-
-      delete data.categoryName;
-      delete data.subCategoryName;
 
       if (data.price) {
         const workshopHistory = await prismaTransaction.workshopHistory.create({
@@ -128,7 +111,6 @@ const updateById = async (id: string, data: any) => {
         });
 
         delete data.price;
-        await s3.remove(workshop.banner);
 
         const updatedWorkshop = await prismaTransaction.workshop.update({
           where: {
@@ -142,8 +124,6 @@ const updateById = async (id: string, data: any) => {
 
         return updatedWorkshop;
       }
-
-      await s3.remove(workshop.banner);
 
       workshop = await prismaTransaction.workshop.update({
         where: {
