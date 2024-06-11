@@ -8,7 +8,7 @@ import subCategoryData from "../data/subCategoryData";
 const create = async (req: Request, res: Response, next: NextFunction) => {
   let bannerUrl = "";
   try {
-    bannerUrl = await s3.upload(req.file!, "webinar/banner");
+    bannerUrl = await s3.upload(req.file!, "banner/webinar");
     req.body.banner = bannerUrl;
 
     if (req.body.categoryName && req.body.categoryName !== "") {
@@ -60,7 +60,7 @@ const getById = async (req: Request, res: Response, next: NextFunction) => {
 const updateById = async (req: Request, res: Response, next: NextFunction) => {
   try {
     if (req.file) {
-      const bannerUrl = await s3.upload(req.file, "webinar/banner");
+      const bannerUrl = await s3.upload(req.file, "banner/webinar");
       req.body.banner = bannerUrl;
     }
 

@@ -28,6 +28,9 @@ app.use(helmet());
 app.use(compression());
 app.use(cookieParser());
 
+// Load static files
+app.use("/uploads", express.static("uploads"));
+
 // Load routes
 app.use("/v1", router);
 

@@ -8,7 +8,7 @@ import subCategoryData from "../data/subCategoryData";
 const create = async (req: Request, res: Response, next: NextFunction) => {
   let bannerUrl = "";
   try {
-    bannerUrl = await s3.upload(req.file!, "training/banner");
+    bannerUrl = await s3.upload(req.file!, "banner/training");
     req.body.banner = bannerUrl;
 
     if (req.body.categoryName) {
@@ -83,7 +83,7 @@ const getById = async (req: Request, res: Response, next: NextFunction) => {
 const updateById = async (req: Request, res: Response, next: NextFunction) => {
   try {
     if (req.file) {
-      const bannerUrl = await s3.upload(req.file, "training/banner");
+      const bannerUrl = await s3.upload(req.file, "banner/training");
       req.body.banner = bannerUrl;
     }
 
@@ -150,7 +150,7 @@ const uploadPlayback = async (
         .json(responseBody("Playback file required", null, null));
     }
 
-    const playbackUrl = await s3.upload(req.file, "training/playback");
+    const playbackUrl = await s3.upload(req.file, "playback/training");
     const training = await trainingData.updateById(req.params.id, playbackUrl);
     return res
       .status(200)
