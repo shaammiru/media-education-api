@@ -1,6 +1,6 @@
 import { NextFunction, Request, Response } from "express";
 import webinarData from "../data/webinarData";
-import s3 from "../utility/awsS3";
+import staticFiles from "../utility/staticFiles";
 import responseBody from "../utility/responseBody";
 import categoryData from "../data/categoryData";
 import subCategoryData from "../data/subCategoryData";
@@ -8,7 +8,7 @@ import subCategoryData from "../data/subCategoryData";
 const create = async (req: Request, res: Response, next: NextFunction) => {
   let bannerUrl = "";
   try {
-    bannerUrl = await s3.upload(req.file!, "banner/webinar");
+    bannerUrl = await staticFiles.upload(req.file!, "banner/webinar");
     req.body.banner = bannerUrl;
 
     if (req.body.categoryName && req.body.categoryName !== "") {
@@ -27,7 +27,7 @@ const create = async (req: Request, res: Response, next: NextFunction) => {
     return res.status(201).json(responseBody("Webinar created", null, webinar));
   } catch (error) {
     if (bannerUrl !== "") {
-      await s3.remove(bannerUrl);
+      await staticFiles.remove(bannerUrl);
     }
     next(error);
   }
@@ -60,7 +60,7 @@ const getById = async (req: Request, res: Response, next: NextFunction) => {
 const updateById = async (req: Request, res: Response, next: NextFunction) => {
   try {
     if (req.file) {
-      const bannerUrl = await s3.upload(req.file, "banner/webinar");
+      const bannerUrl = await staticFiles.upload(req.file, "banner/webinar");
       req.body.banner = bannerUrl;
     }
 

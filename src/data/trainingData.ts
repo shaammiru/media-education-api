@@ -1,5 +1,5 @@
 import { PrismaClient } from "@prisma/client";
-import s3 from "../utility/awsS3";
+import staticFiles from "../utility/staticFiles";
 
 const prisma = new PrismaClient();
 
@@ -84,7 +84,7 @@ const updateById = async (id: string, data: any) => {
       if (!training) return;
 
       if (data.banner) {
-        await s3.remove(training.banner);
+        await staticFiles.remove(training.banner);
       }
 
       const dataToUpdate = {} as any;
@@ -158,7 +158,7 @@ const deleteById = async (id: string) => {
       },
     });
 
-    await s3.remove(training.banner);
+    await staticFiles.remove(training.banner);
 
     return training;
   });

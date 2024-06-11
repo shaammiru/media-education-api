@@ -1,4 +1,5 @@
 import "dotenv/config";
+import path from "path";
 import express from "express";
 import cors from "cors";
 import helmet from "helmet";
@@ -29,7 +30,7 @@ app.use(compression());
 app.use(cookieParser());
 
 // Load static files
-app.use("/uploads", express.static("uploads"));
+app.use("/api/uploads", express.static(path.join(__dirname, "../api/uploads")));
 
 // Load routes
 app.use("/v1", router);

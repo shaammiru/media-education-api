@@ -1,6 +1,6 @@
 import { NextFunction, Request, Response } from "express";
 import workshopData from "../data/workshopData";
-import s3 from "../utility/awsS3";
+import staticFiles from "../utility/staticFiles";
 import responseBody from "../utility/responseBody";
 import categoryData from "../data/categoryData";
 import subCategoryData from "../data/subCategoryData";
@@ -8,7 +8,7 @@ import subCategoryData from "../data/subCategoryData";
 const create = async (req: Request, res: Response, next: NextFunction) => {
   let bannerUrl = "";
   try {
-    bannerUrl = await s3.upload(req.file!, "banner/workshop");
+    bannerUrl = await staticFiles.upload(req.file!, "banner/workshop");
     req.body.banner = bannerUrl;
 
     if (req.body.categoryName && req.body.categoryName !== "") {
@@ -29,7 +29,7 @@ const create = async (req: Request, res: Response, next: NextFunction) => {
       .json(responseBody("Workshop created", null, workshop));
   } catch (error) {
     if (bannerUrl !== "") {
-      await s3.remove(bannerUrl);
+      await staticFiles.remove(bannerUrl);
     }
     next(error);
   }
@@ -62,7 +62,7 @@ const getById = async (req: Request, res: Response, next: NextFunction) => {
 const updateById = async (req: Request, res: Response, next: NextFunction) => {
   try {
     if (req.file) {
-      const bannerUrl = await s3.upload(req.file, "banner/workshop");
+      const bannerUrl = await staticFiles.upload(req.file, "banner/workshop");
       req.body.banner = bannerUrl;
     }
 
@@ -129,7 +129,7 @@ const uploadPlayback = async (
         .json(responseBody("Playback file required", null, null));
     }
 
-    const playbackUrl = await s3.upload(req.file, "playback/workshop");
+    const playbackUrl = await staticFiles.upload(req.file, "playback/workshop");
     const workshop = await workshopData.updateById(req.params.id, playbackUrl);
     return res
       .status(200)
