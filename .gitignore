@@ -5,7 +5,7 @@ node_modules
 dist
 
 # Local files
-uploads/*/*/**
+api/uploads/**/*
 
 # Environment variables
 .env
