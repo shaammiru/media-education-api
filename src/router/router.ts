@@ -9,6 +9,7 @@ import trainingRouter from "./trainingRouter";
 import cartRouter from "./cartRouter";
 import faqRouter from "./faqRouter";
 import videoRouter from "./videoRouter";
+import orderRouter from "./orderRouter";
 
 const router = Router();
 
@@ -22,5 +23,6 @@ router.use("/trainings", trainingRouter);
 router.use("/carts", cartRouter);
 router.use("/faqs", faqRouter);
 router.use("/videos", videoRouter);
+router.use("/orders", orderRouter);
 
 export default router;
