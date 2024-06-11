@@ -33,7 +33,7 @@ app.use(cookieParser());
 app.use("/api/uploads", express.static(path.join(__dirname, "../api/uploads")));
 
 // Load routes
-app.use("/v1", router);
+app.use("/api/v1", router);
 
 // Load swagger documentation
 app.use(
