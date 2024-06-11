@@ -198,6 +198,7 @@ model Training {
   lastTrainingHistoryId String    @unique @map("last_training_history_id") @db.Uuid
   categoryId            String?   @map("category_id") @db.Uuid
   subCategoryId         String?   @map("sub_category_id") @db.Uuid
+  showPrice             Boolean?  @map("show_price")
   createdAt             DateTime  @default(now()) @map("created_at") @db.Timestamptz()
   updatedAt             DateTime  @default(now()) @updatedAt @map("updated_at") @db.Timestamptz()
 

@@ -11,6 +11,7 @@ const trainingSchema = joi.object({
   categoryId: joi.string().uuid({ version: "uuidv4" }).allow(""),
   subCategoryName: joi.string().allow(null),
   subCategoryId: joi.string().uuid({ version: "uuidv4" }).allow(""),
+  showPrice: joi.boolean().allow(null),
 });
 
 const trainingUpdateSchema = joi.object({
@@ -24,6 +25,7 @@ const trainingUpdateSchema = joi.object({
   categoryId: joi.string().uuid({ version: "uuidv4" }).allow(""),
   subCategoryName: joi.string().allow(null),
   subCategoryId: joi.string().uuid({ version: "uuidv4" }).allow(""),
+  showPrice: joi.boolean().allow(null),
 });
 
 export { trainingSchema, trainingUpdateSchema };
