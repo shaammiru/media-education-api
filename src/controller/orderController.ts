@@ -13,9 +13,9 @@ const create = async (req: Request, res: Response, next: NextFunction) => {
   }
 };
 
-const list = async (req: Request, res: Response, next: NextFunction) => {
+const list = async (req: any, res: Response, next: NextFunction) => {
   try {
-    const orders = await orderData.list();
+    const orders = await orderData.list(req.user.id);
     return res.status(200).json({ message: "List of Orders", data: orders });
   } catch (error) {
     next(error);

@@ -18,10 +18,19 @@ const create = async (orderData: any, detailOrders: any[]) => {
   return order;
 };
 
-const list = async () => {
+const list = async (id: string) => {
+  const accountId = id;
+
   const orders = await prisma.order.findMany({
+    where: {
+      accountId: accountId,
+    },
     include: {
-      detailOrders: true,
+      detailOrders: {
+        include: {
+          training: true,
+        },
+      },
     },
   });
 
