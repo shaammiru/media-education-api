@@ -276,7 +276,7 @@ model TrainingMaterial {
   id          String   @id @default(uuid()) @db.Uuid
   title       String
   description String?
-  url         String?
+  url         String
   trainingId  String?  @map("training_id") @db.Uuid
   createdAt   DateTime @default(now()) @map("created_at") @db.Timestamptz()
   updatedAt   DateTime @default(now()) @updatedAt @map("updated_at") @db.Timestamptz()
