@@ -15,7 +15,7 @@ const accountSchema = joi.object({
     .string()
     .valid(...roleEnum)
     .required(),
-  phone: joi.string().regex(/^62\d{9,12}$/),
+  phone: joi.string(),
   address: joi.string(),
   birthdate: joi.date().iso(),
   organization: joi.string(),
@@ -29,7 +29,7 @@ const accountUpdateSchema = joi.object({
   email: joi.string().email(),
   password: joi.string().min(8),
   role: joi.string().valid(...roleEnum),
-  phone: joi.string().regex(/^62\d{9,12}$/),
+  phone: joi.string(),
   address: joi.string(),
   birthdate: joi.date().iso(),
   organization: joi.string(),
