@@ -13,7 +13,7 @@ import {
   login,
   logout,
   getCurrentUser,
-  checkValidToken,
+  validateToken,
   forgotPassword,
   resetPassword,
 } from "../controller/authController";
@@ -33,11 +33,11 @@ router.post(
   validateBody(resetPasswordSchema),
   resetPassword
 );
+router.get("/validate-token", validateToken);
 
 router.use(verifyToken);
 
 router.get("/logout", logout);
 router.get("/user", getCurrentUser);
-router.post("/verify-token", checkValidToken);
 
 export default router;

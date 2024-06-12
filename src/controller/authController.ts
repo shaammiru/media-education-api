@@ -8,6 +8,7 @@ import {
 } from "../middleware/auth";
 import email from "../utility/email";
 import crypto from "crypto";
+import jwt from "jsonwebtoken";
 
 const register = async (req: Request, res: Response, next: NextFunction) => {
   try {
@@ -90,9 +91,35 @@ const getCurrentUser = (req: any, res: Response, next: NextFunction) => {
   }
 };
 
-const checkValidToken = (req: any, res: Response, next: NextFunction) => {
+const validateToken = (req: any, res: Response, next: NextFunction) => {
   try {
-    return res.status(200).json(responseBody("OK", null, null));
+    let token = req.cookies.token;
+    if (!token) {
+      const header = req.headers.authorization as string;
+      if (!header) {
+        return res
+          .status(401)
+          .json(responseBody("Unauthorized", null, { isValid: false }));
+      }
+
+      token = header.split(" ")[1];
+
+      if (!token) {
+        return res
+          .status(401)
+          .json(responseBody("Unauthorized", null, { isValid: false }));
+      }
+    }
+
+    jwt.verify(token, process.env.JWT_SECRET!, (error: any, decoded: any) => {
+      if (error) {
+        return res
+          .status(401)
+          .json(responseBody("Unauthorized", null, { isValid: false }));
+      }
+
+      return res.status(200).json(responseBody("OK", null, { isValid: true }));
+    });
   } catch (error) {
     next(error);
   }
@@ -165,7 +192,7 @@ export {
   login,
   logout,
   getCurrentUser,
-  checkValidToken,
+  validateToken,
   forgotPassword,
   resetPassword,
 };
