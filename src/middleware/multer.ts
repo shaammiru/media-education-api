@@ -37,6 +37,32 @@ const videoFilter = (
   }
 };
 
+const documentFilter = (
+  req: Request,
+  file: Express.Multer.File,
+  cb: multer.FileFilterCallback
+) => {
+  if (
+    file.mimetype === "application/pdf" ||
+    file.mimetype ===
+      "application/vnd.openxmlformats-officedocument.wordprocessingml.document" ||
+    file.mimetype ===
+      "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" ||
+    file.mimetype ===
+      "application/vnd.openxmlformats-officedocument.presentationml.presentation" ||
+    file.mimetype === "application/msword" ||
+    file.mimetype === "application/vnd.ms-excel" ||
+    file.mimetype === "application/vnd.ms-powerpoint" ||
+    file.mimetype === "application/vnd.ms-access"
+  ) {
+    cb(null, true);
+  } else {
+    cb(
+      new multer.MulterError("LIMIT_UNEXPECTED_FILE", "File type not allowed")
+    );
+  }
+};
+
 const imageUpload = multer({
   storage: multer.memoryStorage(),
   fileFilter: imageFilter,
@@ -49,4 +75,10 @@ const videoUpload = multer({
   limits: { fileSize: 500 * 1024 * 1024 },
 });
 
-export { imageUpload, videoUpload };
+const documentUpload = multer({
+  storage: multer.memoryStorage(),
+  fileFilter: documentFilter,
+  limits: { fileSize: 20 * 1024 * 1024 },
+});
+
+export { imageUpload, videoUpload, documentUpload };
