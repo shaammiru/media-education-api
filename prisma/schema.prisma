@@ -8,6 +8,32 @@ datasource db {
   directUrl = env("DIRECT_URL")
 }
 
+enum Role {
+  ADMIN
+  USER
+}
+
+enum Gender {
+  LAKI_LAKI
+  PEREMPUAN
+}
+
+enum EventStatus {
+  OFFLINE
+  ONLINE
+}
+
+enum WorkshopStatus {
+  LIVE
+  PLAYBACK
+}
+
+enum CartType {
+  WEBINAR
+  WORKSHOP
+  TRAINING
+}
+
 model Account {
   id                  String    @id @default(uuid()) @db.Uuid
   fullname            String
@@ -244,34 +270,6 @@ model Banner {
   updatedAt DateTime @default(now()) @updatedAt @map("updated_at") @db.Timestamptz(6)
 
   @@map("banners")
-}
-
-enum Role {
-  ADMIN
-  USER
-}
-
-enum Gender {
-  LAKI_LAKI
-  PEREMPUAN
-}
-
-enum EventStatus {
-  OFFLINE
-  ONLINE
-}
-
-enum WorkshopStatus {
-  LIVE
-  PLAYBACK
-}
-
-enum CartType {
-  WEBINAR
-  WORKSHOP
-  TRAINING
-
-  @@map("detail_orders")
 }
 
 model TrainingMaterial {
