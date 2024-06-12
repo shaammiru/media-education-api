@@ -44,10 +44,7 @@ const accountUpdateProfileSchema = joi.object({
     .regex(/^[a-zA-Z0-9_-]+$/)
     .allow(null),
   email: joi.string().email().allow(null),
-  phone: joi
-    .string()
-    .regex(/^62\d{9,12}$/)
-    .allow(null),
+  phone: joi.string().allow(null),
   address: joi.string().allow(null),
   birthdate: joi.date().iso().allow(null),
   organization: joi.string().allow(null),
