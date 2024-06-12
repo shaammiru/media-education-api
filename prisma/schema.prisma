@@ -164,8 +164,8 @@ model Training {
   status                String?
   certificate           String?
   syllabus              String?
-  urlExternalTitle      String?
-  urlExternal           String?
+  urlExternalTitle      String?            @map("url_external_title")
+  urlExternal           String?            @map("url_external")
   startTime             DateTime?          @map("start_time") @db.Timestamptz(6)
   endTime               DateTime?          @map("end_time") @db.Timestamptz(6)
   lastTrainingHistoryId String             @unique @map("last_training_history_id") @db.Uuid
