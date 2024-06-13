@@ -1,8 +1,14 @@
 import joi from "joi";
 
+const eventStatus = ["OFFLINE", "ONLINE", "HYBRID"];
+
 const trainingSchema = joi.object({
   title: joi.string().required(),
   description: joi.string().required(),
+  status: joi
+    .string()
+    .valid(...eventStatus)
+    .allow(null),
   startTime: joi.date().iso().required(),
   endTime: joi.date().iso().required(),
   price: joi.number().positive().required(),
@@ -17,6 +23,7 @@ const trainingSchema = joi.object({
 const trainingUpdateSchema = joi.object({
   title: joi.string(),
   description: joi.string(),
+  status: joi.string().valid(...eventStatus),
   startTime: joi.date().iso(),
   endTime: joi.date().iso(),
   price: joi.number().positive(),

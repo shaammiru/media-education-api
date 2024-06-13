@@ -95,15 +95,7 @@ const validateToken = (req: any, res: Response, next: NextFunction) => {
   try {
     let token = req.cookies.token;
     if (!token) {
-      const header = req.headers.authorization as string;
-      if (!header) {
-        return res
-          .status(401)
-          .json(responseBody("Unauthorized", null, { isValid: false }));
-      }
-
-      token = header.split(" ")[1];
-
+      token = req.body.token;
       if (!token) {
         return res
           .status(401)
@@ -111,7 +103,7 @@ const validateToken = (req: any, res: Response, next: NextFunction) => {
       }
     }
 
-    jwt.verify(token, process.env.JWT_SECRET!, (error: any, decoded: any) => {
+    jwt.verify(token, process.env.JWT_SECRET!, (error: any) => {
       if (error) {
         return res
           .status(401)

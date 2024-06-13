@@ -3,6 +3,7 @@ import { validateBody } from "../middleware/requestValidator";
 import {
   registerSchema,
   loginSchema,
+  validateTokenSchema,
   forgotPasswordSchema,
   resetPasswordSchema,
 } from "../schema/authSchema";
@@ -33,7 +34,11 @@ router.post(
   validateBody(resetPasswordSchema),
   resetPassword
 );
-router.post("/validate-token", validateToken);
+router.post(
+  "/validate-token",
+  validateBody(validateTokenSchema),
+  validateToken
+);
 
 router.use(verifyToken);
 

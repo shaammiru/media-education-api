@@ -21,6 +21,7 @@ enum Gender {
 enum EventStatus {
   OFFLINE
   ONLINE
+  HYBRID
 }
 
 enum WorkshopStatus {
@@ -161,7 +162,7 @@ model Training {
   title                 String
   banner                String
   description           String
-  status                String?
+  status                EventStatus        @default(HYBRID)
   certificate           String?
   syllabus              String?
   urlExternalTitle      String?            @map("url_external_title")
