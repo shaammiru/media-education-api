@@ -28,4 +28,19 @@ const trainingUpdateSchema = joi.object({
   showPrice: joi.boolean().allow(null),
 });
 
-export { trainingSchema, trainingUpdateSchema };
+const trainingMaterialSchema = joi.object({
+  title: joi.string().required(),
+  description: joi.string().allow(null),
+});
+
+const trainingMaterialUpdateSchema = joi.object({
+  title: joi.string().allow(null),
+  description: joi.string().allow(null),
+});
+
+export {
+  trainingSchema,
+  trainingUpdateSchema,
+  trainingMaterialSchema,
+  trainingMaterialUpdateSchema,
+};

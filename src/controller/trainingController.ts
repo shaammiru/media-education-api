@@ -4,6 +4,7 @@ import staticFiles from "../utility/staticFiles";
 import responseBody from "../utility/responseBody";
 import categoryData from "../data/categoryData";
 import subCategoryData from "../data/subCategoryData";
+import trainingMaterialData from "../data/trainingMaterialData";
 
 const create = async (req: Request, res: Response, next: NextFunction) => {
   let bannerUrl = "";
@@ -138,6 +139,42 @@ const deleteById = async (req: Request, res: Response, next: NextFunction) => {
   }
 };
 
+const listMaterial = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    const materials = await trainingMaterialData.listByTrainingId(
+      req.params.id
+    );
+    return res.status(200).json(responseBody("OK", null, materials));
+  } catch (error) {
+    next(error);
+  }
+};
+
+const uploadMaterial = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  let materialUrl = "";
+  try {
+    materialUrl = await staticFiles.upload(req.file!, "material/training");
+    req.body.url = materialUrl;
+    const training = await trainingMaterialData.createByTrainingId(
+      req.params.id,
+      req.body
+    );
+    return res
+      .status(200)
+      .json(responseBody("Material uploaded", null, training));
+  } catch (error) {
+    next(error);
+  }
+};
+
 const uploadPlayback = async (
   req: Request,
   res: Response,
@@ -160,4 +197,13 @@ const uploadPlayback = async (
   }
 };
 
-export { create, list, getById, updateById, deleteById, uploadPlayback };
+export {
+  create,
+  list,
+  getById,
+  updateById,
+  deleteById,
+  listMaterial,
+  uploadMaterial,
+  uploadPlayback,
+};

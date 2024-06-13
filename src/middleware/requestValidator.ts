@@ -2,6 +2,7 @@ import { Request, Response, NextFunction } from "express";
 import { MulterError } from "multer";
 import { validateBufferMIMEType } from "validate-image-type";
 import joi from "joi";
+import mime from "mime-types";
 
 const paramsSchema = joi.object({
   id: joi
@@ -92,12 +93,9 @@ const validateDocument = (fieldName: string) => {
         .status(400)
         .json({ error: `Document file "${fieldName}" is required` });
     } else {
-      const validationResult = await validateBufferMIMEType(req.file.buffer, {
-        originalFilename: req.file.originalname,
-        allowMimeTypes: documentMimeTypes,
-      });
+      const mimeType = mime.lookup(req.file.originalname);
 
-      if (validationResult.error) {
+      if (mimeType === false || !documentMimeTypes.includes(mimeType)) {
         next(new MulterError("LIMIT_UNEXPECTED_FILE", "File type not allowed"));
       }
 
