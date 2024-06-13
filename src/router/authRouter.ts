@@ -40,9 +40,7 @@ router.post(
   validateToken
 );
 
-router.use(verifyToken);
-
-router.get("/logout", logout);
-router.get("/user", getCurrentUser);
+router.get("/logout", verifyToken, logout);
+router.get("/user", verifyToken, getCurrentUser);
 
 export default router;
