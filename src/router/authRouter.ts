@@ -33,7 +33,7 @@ router.post(
   validateBody(resetPasswordSchema),
   resetPassword
 );
-router.get("/validate-token", validateToken);
+router.post("/validate-token", validateToken);
 
 router.use(verifyToken);
 
