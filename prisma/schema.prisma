@@ -21,7 +21,6 @@ enum Gender {
 enum EventStatus {
   OFFLINE
   ONLINE
-  HYBRID
 }
 
 enum WorkshopStatus {
@@ -157,12 +156,18 @@ model WorkshopHistory {
   @@map("workshop_histories")
 }
 
+enum TrainingStatus {
+  OFFLINE
+  ONLINE
+  HYBRID
+}
+
 model Training {
   id                    String             @id @default(uuid()) @db.Uuid
   title                 String
   banner                String
   description           String
-  status                EventStatus        @default(HYBRID)
+  status                TrainingStatus     @default(HYBRID)
   certificate           String?
   syllabus              String?
   urlExternalTitle      String?            @map("url_external_title")
