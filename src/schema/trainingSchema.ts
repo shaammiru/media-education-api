@@ -9,6 +9,10 @@ const trainingSchema = joi.object({
     .string()
     .valid(...eventStatus)
     .allow(null),
+  certificate: joi.string().allow(null),
+  syllabus: joi.string().allow(null),
+  urlExternalTitle: joi.string().allow(null),
+  urlExternal: joi.string().uri().allow(null),
   startTime: joi.date().iso().required(),
   endTime: joi.date().iso().required(),
   price: joi.number().positive().required(),
@@ -24,6 +28,10 @@ const trainingUpdateSchema = joi.object({
   title: joi.string(),
   description: joi.string(),
   status: joi.string().valid(...eventStatus),
+  certificate: joi.string().allow(null),
+  syllabus: joi.string().allow(null),
+  urlExternalTitle: joi.string().allow(null),
+  urlExternal: joi.string().uri().allow(null),
   startTime: joi.date().iso(),
   endTime: joi.date().iso(),
   price: joi.number().positive(),
