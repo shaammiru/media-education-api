@@ -2,6 +2,5 @@
 
 ### TODO
 
-- [ ] Add query param to /webinars (pagination)
-- [ ] Add endpoint for get account by token
-- [ ] Add product data in /cart get
+- [ ] Create dev and prod environment
+- [ ] Change discount value between 0-100
