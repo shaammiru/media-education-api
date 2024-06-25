@@ -1,13 +1,26 @@
-version: "3.8"
-
 services:
-  postgres:
+  postgres-dev:
     image: postgres:16-alpine
-    container_name: media-education-db
+    container_name: edutrain-dev-db
+    restart: unless-stopped
+    ports:
+      - 5433:5432
+    environment:
+      - POSTGRES_USER=edutrain
+      - POSTGRES_PASSWORD=EdutrainDev
+      - POSTGRES_DB=edutrain_db
+    volumes:
+      - /root/backup/dev:/home/backup
+
+  postgres-prod:
+    image: postgres:16-alpine
+    container_name: edutrain-prod-db
     restart: unless-stopped
     ports:
       - 5432:5432
     environment:
-      - POSTGRES_USER=postgres
-      - POSTGRES_PASSWORD=postgres
-      - POSTGRES_DB=media-education
+      - POSTGRES_USER=edutrain
+      - POSTGRES_PASSWORD=EdutrainProd
+      - POSTGRES_DB=edutrain_db
+    volumes:
+      - /root/backup/prod:/home/backup
