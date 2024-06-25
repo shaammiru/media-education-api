@@ -5,9 +5,12 @@
   "main": "index.js",
   "scripts": {
     "build": "tsc",
-    "start": "node dist/index.js",
-    "dev": "nodemon --watch src src/index.ts",
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "start:dev": "NODE_ENV=development node dist/index.js",
+    "watch:dev": "set NODE_ENV=development && nodemon --watch src src/index.ts",
+    "start:dev:windows": "set NODE_ENV=development && node dist/index.js",
+    "watch:dev:windows": "set NODE_ENV=development && nodemon --watch src src/index.ts",
+    "start:prod": "NODE_ENV=production node dist/index.js",
+    "watch:prod": "NODE_ENV=production nodemon --watch src src/index.ts",
     "postinstall": "prisma generate"
   },
   "author": "",
