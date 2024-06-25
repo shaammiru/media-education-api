@@ -15,10 +15,11 @@ const accountSchema = joi.object({
     .string()
     .valid(...roleEnum)
     .required(),
-  phone: joi.string().regex(/^62\d{9,12}$/),
+  phone: joi.string(),
   address: joi.string(),
   birthdate: joi.date().iso(),
-  company: joi.string(),
+  organization: joi.string(),
+  university: joi.string(),
   gender: joi.string().valid(...genderEnum),
 });
 
@@ -28,11 +29,27 @@ const accountUpdateSchema = joi.object({
   email: joi.string().email(),
   password: joi.string().min(8),
   role: joi.string().valid(...roleEnum),
-  phone: joi.string().regex(/^62\d{9,12}$/),
+  phone: joi.string(),
   address: joi.string(),
   birthdate: joi.date().iso(),
-  company: joi.string(),
+  organization: joi.string(),
+  university: joi.string(),
   gender: joi.string().valid(...genderEnum),
 });
 
-export { accountSchema, accountUpdateSchema };
+const accountUpdateProfileSchema = joi.object({
+  fullname: joi.string().allow(null),
+  username: joi
+    .string()
+    .regex(/^[a-zA-Z0-9_-]+$/)
+    .allow(null),
+  email: joi.string().email().allow(null),
+  phone: joi.string().allow(null),
+  address: joi.string().allow(null),
+  birthdate: joi.date().iso().allow(null),
+  organization: joi.string().allow(null),
+  university: joi.string().allow(null),
+  gender: joi.string().valid(...genderEnum),
+});
+
+export { accountSchema, accountUpdateSchema, accountUpdateProfileSchema };

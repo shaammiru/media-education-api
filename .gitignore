@@ -4,6 +4,9 @@ node_modules
 # Build files
 dist
 
+# Local files
+api/uploads/**/*
+
 # Environment variables
 .env
 

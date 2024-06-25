@@ -1,4 +1,4 @@
-import { PrismaClient } from "@prisma/client";
+import { PrismaClient, Role } from "@prisma/client";
 
 const prisma = new PrismaClient();
 
@@ -10,7 +10,17 @@ const create = async (data: any) => {
   return account;
 };
 
-const list = async () => {
+const list = async (role: Role | null) => {
+  if (role) {
+    const accounts = await prisma.account.findMany({
+      where: {
+        role: role,
+      },
+    });
+
+    return accounts;
+  }
+
   const accounts = await prisma.account.findMany();
 
   return accounts;
@@ -49,4 +59,32 @@ const deleteById = async (id: string) => {
   return account;
 };
 
-export default { create, list, getById, updateById, deleteById };
+const getByEmail = async (email: string) => {
+  const account = await prisma.account.findUnique({
+    where: {
+      email: email,
+    },
+  });
+
+  return account;
+};
+
+const listAdmin = async () => {
+  const accounts = await prisma.account.findMany({
+    where: {
+      role: "ADMIN",
+    },
+  });
+
+  return accounts;
+};
+
+export default {
+  create,
+  list,
+  getById,
+  updateById,
+  deleteById,
+  getByEmail,
+  listAdmin,
+};

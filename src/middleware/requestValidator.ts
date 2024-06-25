@@ -2,6 +2,7 @@ import { Request, Response, NextFunction } from "express";
 import { MulterError } from "multer";
 import { validateBufferMIMEType } from "validate-image-type";
 import joi from "joi";
+import mime from "mime-types";
 
 const paramsSchema = joi.object({
   id: joi
@@ -35,6 +36,18 @@ const validateBody = (schema: joi.ObjectSchema<any>) => {
   };
 };
 
+const imageMimeTypes = ["image/jpeg", "image/jpg", "image/png"];
+const documentMimeTypes = [
+  "application/pdf",
+  "application/msword",
+  "application/vnd.ms-excel",
+  "application/vnd.ms-powerpoint",
+  "application/vnd.ms-access",
+  "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+  "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+  "application/vnd.openxmlformats-officedocument.presentationml.presentation",
+];
+
 const validateImage = (fieldName: string) => {
   return async (req: Request, res: Response, next: NextFunction) => {
     if (!req.file) {
@@ -44,7 +57,7 @@ const validateImage = (fieldName: string) => {
     } else {
       const validationResult = await validateBufferMIMEType(req.file.buffer, {
         originalFilename: req.file.originalname,
-        allowMimeTypes: ["image/jpeg", "image/jpg", "image/png"],
+        allowMimeTypes: imageMimeTypes,
       });
 
       if (validationResult.error) {
@@ -61,9 +74,9 @@ const validateImageUpdate = () => {
     if (req.file) {
       const validationResult = await validateBufferMIMEType(req.file.buffer, {
         originalFilename: req.file.originalname,
-        allowMimeTypes: ["image/jpeg", "image/jpg", "image/png"],
+        allowMimeTypes: imageMimeTypes,
       });
-      
+
       if (validationResult.error) {
         next(new MulterError("LIMIT_UNEXPECTED_FILE", "File type not allowed"));
       }
@@ -73,4 +86,46 @@ const validateImageUpdate = () => {
   };
 };
 
-export { validateParams, validateBody, validateImage, validateImageUpdate };
+const validateDocument = (fieldName: string) => {
+  return async (req: Request, res: Response, next: NextFunction) => {
+    if (!req.file) {
+      return res
+        .status(400)
+        .json({ error: `Document file "${fieldName}" is required` });
+    } else {
+      const mimeType = mime.lookup(req.file.originalname);
+
+      if (mimeType === false || !documentMimeTypes.includes(mimeType)) {
+        next(new MulterError("LIMIT_UNEXPECTED_FILE", "File type not allowed"));
+      }
+
+      next();
+    }
+  };
+};
+
+const validateDocumentUpdate = () => {
+  return async (req: Request, res: Response, next: NextFunction) => {
+    if (req.file) {
+      const validationResult = await validateBufferMIMEType(req.file.buffer, {
+        originalFilename: req.file.originalname,
+        allowMimeTypes: documentMimeTypes,
+      });
+
+      if (validationResult.error) {
+        next(new MulterError("LIMIT_UNEXPECTED_FILE", "File type not allowed"));
+      }
+    }
+
+    next();
+  };
+};
+
+export {
+  validateParams,
+  validateBody,
+  validateImage,
+  validateImageUpdate,
+  validateDocument,
+  validateDocumentUpdate,
+};

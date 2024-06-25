@@ -5,7 +5,7 @@ const uuid = joi
   .uuid({ version: "uuidv4" })
   .message("Invalid UUID format");
 
-const cartTypeEnum = ["WEBINAR"];
+const cartTypeEnum = ["WEBINAR", "WORKSHOP", "TRAINING"];
 
 const cartSchema = joi.object({
   type: joi

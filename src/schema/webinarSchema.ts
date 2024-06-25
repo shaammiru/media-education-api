@@ -13,8 +13,11 @@ const webinarSchema = joi.object({
     .required(),
   maxAttendees: joi.number().integer().required(),
   price: joi.number().positive().required(),
-  categoryId: joi.string().uuid({ version: "uuidv4" }),
-  subCategoryId: joi.string().uuid({ version: "uuidv4" }),
+  certificate: joi.string().allow(null),
+  categoryName: joi.string().allow(null),
+  categoryId: joi.string().uuid({ version: "uuidv4" }).allow(""),
+  subCategoryName: joi.string().allow(null),
+  subCategoryId: joi.string().uuid({ version: "uuidv4" }).allow(""),
 });
 
 const webinarUpdateSchema = joi.object({
@@ -25,8 +28,10 @@ const webinarUpdateSchema = joi.object({
   eventStatus: joi.string().valid(...eventStatusEnum),
   maxAttendees: joi.number().integer(),
   price: joi.number().positive(),
-  categoryId: joi.string().uuid({ version: "uuidv4" }),
-  subCategoryId: joi.string().uuid({ version: "uuidv4" }),
+  categoryName: joi.string().allow(null),
+  categoryId: joi.string().uuid({ version: "uuidv4" }).allow(""),
+  subCategoryName: joi.string().allow(null),
+  subCategoryId: joi.string().uuid({ version: "uuidv4" }).allow(""),
 });
 
 export { webinarSchema, webinarUpdateSchema };

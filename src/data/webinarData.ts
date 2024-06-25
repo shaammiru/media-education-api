@@ -1,42 +1,76 @@
 import { PrismaClient } from "@prisma/client";
-import s3 from "../utility/awsS3";
+import staticFiles from "../utility/staticFiles";
 
 const prisma = new PrismaClient();
 
 const create = async (data: any) => {
-  const webinar = await prisma.$transaction(async (prismaTransaction) => {
-    const webinarHistory = await prismaTransaction.webinarHistory.create({
-      data: {
-        price: data.price,
-      },
-    });
+  const webinar = await prisma.$transaction(
+    async (prismaTransaction) => {
+      if (!data.categoryId) {
+        const newCategory = await prismaTransaction.category.create({
+          data: {
+            name: data.categoryName,
+          },
+        });
+        data.categoryId = newCategory.id;
+      }
 
-    delete data.price;
+      if (!data.subCategoryId) {
+        const newSubCategory = await prismaTransaction.subCategory.create({
+          data: {
+            name: data.subCategoryName,
+          },
+        });
+        data.subCategoryId = newSubCategory.id;
+      }
 
-    const webinar = await prismaTransaction.webinar.create({
-      data: {
-        lastWebinarHistoryId: webinarHistory.id,
-        ...data,
-      },
-    });
+      delete data.categoryName;
+      delete data.subCategoryName;
 
-    await prismaTransaction.webinarHistory.update({
-      where: {
-        id: webinarHistory.id,
-      },
-      data: {
-        webinarId: webinar.id,
-      },
-    });
+      const webinarHistory = await prismaTransaction.webinarHistory.create({
+        data: {
+          price: data.price,
+        },
+      });
 
-    return webinar;
-  });
+      delete data.price;
+
+      const webinar = await prismaTransaction.webinar.create({
+        data: {
+          lastWebinarHistoryId: webinarHistory.id,
+          ...data,
+        },
+      });
+
+      await prismaTransaction.webinarHistory.update({
+        where: {
+          id: webinarHistory.id,
+        },
+        data: {
+          webinarId: webinar.id,
+        },
+      });
+
+      return webinar;
+    },
+    {
+      maxWait: 5000,
+      timeout: 10000,
+    }
+  );
 
   return webinar;
 };
 
 const list = async () => {
-  const webinars = await prisma.webinar.findMany();
+  const webinars = await prisma.webinar.findMany({
+    include: {
+      webinarHistories: true,
+      lastWebinarHistory: true,
+      category: true,
+      subCategory: true,
+    },
+  });
 
   return webinars;
 };
@@ -46,6 +80,12 @@ const getById = async (id: string) => {
     where: {
       id: id,
     },
+    include: {
+      webinarHistories: true,
+      lastWebinarHistory: true,
+      category: true,
+      subCategory: true,
+    },
   });
 
   if (!webinar) return;
@@ -54,41 +94,71 @@ const getById = async (id: string) => {
 };
 
 const updateById = async (id: string, data: any) => {
-  const webinar = await prisma.$transaction(async (prismaTransaction) => {
-    if (data.price) {
-      const webinarHistory = await prismaTransaction.webinarHistory.create({
-        data: {
-          webinarId: id,
-          price: data.price,
+  const webinar = await prisma.$transaction(
+    async (prismaTransaction) => {
+      let webinar = await prismaTransaction.webinar.findUnique({
+        where: {
+          id: id,
         },
       });
 
-      delete data.price;
+      if (!webinar) return;
 
-      const webinar = await prismaTransaction.webinar.update({
+      if (data.banner) {
+        await staticFiles.remove(webinar.banner);
+      }
+
+      if (data.price) {
+        const webinarHistory = await prismaTransaction.webinarHistory.create({
+          data: {
+            webinarId: id,
+            price: data.price,
+          },
+        });
+
+        delete data.price;
+
+        const updatedWebinar = await prismaTransaction.webinar.update({
+          where: {
+            id: id,
+          },
+          data: {
+            lastWebinarHistoryId: webinarHistory.id,
+            ...data,
+          },
+          include: {
+            webinarHistories: true,
+            lastWebinarHistory: true,
+            category: true,
+            subCategory: true,
+          },
+        });
+
+        return updatedWebinar;
+      }
+
+      webinar = await prismaTransaction.webinar.update({
         where: {
           id: id,
         },
         data: {
-          lastWebinarHistoryId: webinarHistory.id,
           ...data,
+        },
+        include: {
+          webinarHistories: true,
+          lastWebinarHistory: true,
+          category: true,
+          subCategory: true,
         },
       });
 
       return webinar;
+    },
+    {
+      maxWait: 5000,
+      timeout: 10000,
     }
-
-    const webinar = await prismaTransaction.webinar.update({
-      where: {
-        id: id,
-      },
-      data: {
-        ...data,
-      },
-    });
-
-    return webinar;
-  });
+  );
 
   return webinar;
 };
@@ -101,10 +171,10 @@ const deleteById = async (id: string) => {
       },
     });
 
-    await s3.remove(webinar.banner);
+    await staticFiles.remove(webinar.banner);
 
     return webinar;
-  })
+  });
 
   return webinar;
 };
