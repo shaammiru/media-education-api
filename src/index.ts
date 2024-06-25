@@ -1,4 +1,4 @@
-import dotenv from "dotenv";
+import "dotenv/config";
 import path from "path";
 import express from "express";
 import cors from "cors";
@@ -19,15 +19,6 @@ import {
 
 // Routes
 import router from "./router/router";
-
-// Load environment variables
-if (process.env.NODE_ENV === "production") {
-  dotenv.config({ path: path.resolve(__dirname, "../.env") });
-  console.log(path.resolve(__dirname, ".env"));
-} else {
-  dotenv.config({ path: path.resolve(__dirname, "../.env.dev") });
-  console.log(path.resolve(__dirname, ".env.dev"));
-}
 
 const app = express();
 
