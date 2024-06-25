@@ -9,6 +9,7 @@ api/uploads/**/*
 
 # Environment variables
 .env
+.env.dev
 
 # IDE files
 .idea
