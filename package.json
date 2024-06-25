@@ -6,10 +6,11 @@
   "scripts": {
     "build": "tsc",
     "start:dev": "NODE_ENV=development node dist/index.js",
-    "start:prod": "NODE_ENV=production node dist/index.js",
     "watch:dev": "set NODE_ENV=development && nodemon --watch src src/index.ts",
+    "start:dev:windows": "set NODE_ENV=development && node dist/index.js",
+    "watch:dev:windows": "set NODE_ENV=development && nodemon --watch src src/index.ts",
+    "start:prod": "NODE_ENV=production node dist/index.js",
     "watch:prod": "NODE_ENV=production nodemon --watch src src/index.ts",
-    "test": "echo \"Error: no test specified\" && exit 1",
     "postinstall": "prisma generate"
   },
   "author": "",
