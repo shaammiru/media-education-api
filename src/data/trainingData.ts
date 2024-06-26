@@ -79,6 +79,9 @@ const updateById = async (id: string, data: any) => {
         where: {
           id: id,
         },
+        include: {
+          lastTrainingHistory: true,
+        },
       });
 
       if (!training) return;
@@ -101,6 +104,14 @@ const updateById = async (id: string, data: any) => {
       }
 
       if (dataToUpdate.price || dataToUpdate.discount) {
+        if (!dataToUpdate.price) {
+          dataToUpdate.price = training.lastTrainingHistory.price;
+        }
+
+        if (!dataToUpdate.discount) {
+          dataToUpdate.discount = training.lastTrainingHistory.discount;
+        }
+
         const trainingHistory = await prismaTransaction.trainingHistory.create({
           data: dataToUpdate,
         });
