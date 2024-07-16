@@ -30,10 +30,13 @@ app.use(compression());
 app.use(cookieParser());
 
 // Load static files
-app.use("/api/uploads", express.static(path.join(__dirname, "../api/uploads")));
+app.use(
+  "/api/dev/uploads",
+  express.static(path.join(__dirname, `../${process.env.STATIC_DIR}`))
+);
 
 // Load routes
-app.use("/api/v1", router);
+app.use("/api/dev/v1", router);
 
 // Load swagger documentation
 app.use(
