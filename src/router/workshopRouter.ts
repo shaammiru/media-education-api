@@ -15,6 +15,7 @@ import {
   updateById,
   deleteById,
   uploadPlayback,
+  getRegisteredUsers,
 } from "../controller/workshopController";
 
 const router = Router();
@@ -46,5 +47,7 @@ router.put(
   videoUpload.single("playback"),
   uploadPlayback
 );
+
+router.get("/registered-users", getRegisteredUsers);
 
 export default router;

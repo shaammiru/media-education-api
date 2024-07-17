@@ -21,6 +21,7 @@ import {
   deleteById,
   listMaterial,
   uploadMaterial,
+  getRegisteredUsers,
 } from "../controller/trainingController";
 
 const router = Router();
@@ -55,5 +56,7 @@ router.post(
   validateBody(trainingMaterialSchema),
   uploadMaterial
 );
+
+router.get("/registered-users", getRegisteredUsers);
 
 export default router;
