@@ -1,10 +1,10 @@
 import "dotenv/config";
-import path from "path";
 import express from "express";
 import cors from "cors";
 import helmet from "helmet";
 import compression from "compression";
 import cookieParser from "cookie-parser";
+import staticFiles from "./utility/staticFiles";
 
 // Error handling middleware
 import {
@@ -31,10 +31,7 @@ const baseEndpoint =
   process.env.NODE_ENV === "development" ? "/api/dev" : "/api";
 
 // Load static files
-app.use(
-  `${baseEndpoint}/uploads`,
-  express.static(path.join(__dirname, `../${process.env.STATIC_DIR}`))
-);
+app.use(`${baseEndpoint}/uploads`, express.static(staticFiles.staticDirectory));
 
 // Load routes
 app.use(`${baseEndpoint}/v1`, router);

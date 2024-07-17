@@ -2,7 +2,9 @@ import path from "path";
 import fs from "fs/promises";
 import { v4 } from "uuid";
 
-const staticDirectory = path.join(__dirname, `../../${process.env.STATIC_DIR}`);
+const baseDirectory =
+  process.env.NODE_ENV === "development" ? "api/dev/uploads" : "api/uploads";
+const staticDirectory = path.join(__dirname, `../../${baseDirectory}`);
 
 const upload = async (file: Express.Multer.File, directory: string) => {
   const fileName = `${Date.now().toString()}-${v4()}.${
@@ -10,7 +12,8 @@ const upload = async (file: Express.Multer.File, directory: string) => {
   }`;
   const filePath = path.join(staticDirectory, directory, fileName);
   await fs.writeFile(filePath, file.buffer);
-  return `${process.env.HOST}/${process.env.STATIC_DIR}/${directory}/${fileName}`;
+  console.log(`/${baseDirectory}/${directory}/${fileName}`);
+  return `${process.env.HOST}/${baseDirectory}/${directory}/${fileName}`;
 };
 
 const remove = async (url: string) => {
@@ -20,6 +23,7 @@ const remove = async (url: string) => {
 };
 
 export default {
+  staticDirectory,
   upload,
   remove,
 };
