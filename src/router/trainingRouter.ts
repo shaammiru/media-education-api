@@ -57,6 +57,6 @@ router.post(
   uploadMaterial
 );
 
-router.get("/registered-users", getRegisteredUsers);
+router.get("/:id/registered-users", getRegisteredUsers);
 
 export default router;
