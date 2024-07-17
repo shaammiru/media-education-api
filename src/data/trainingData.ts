@@ -72,6 +72,31 @@ const getById = async (id: string) => {
   return training;
 };
 
+const getRegisteredUsers = async (id: string) => {
+  const registeredUsers = await prisma.account.findMany({
+    where: {
+      orders: {
+        some: {
+          detailOrders: {
+            some: {
+              trainingId: id,
+            },
+          },
+        },
+      },
+    },
+    select: {
+      fullname: true,
+      organization: true,
+      email: true,
+      phone: true,
+      createdAt: true,
+    },
+  });
+
+  return registeredUsers;
+};
+
 const updateById = async (id: string, data: any) => {
   const training = await prisma.$transaction(
     async (prismaTransaction) => {
@@ -181,6 +206,7 @@ export default {
   create,
   list,
   getById,
+  getRegisteredUsers,
   updateById,
   deleteById,
 };
