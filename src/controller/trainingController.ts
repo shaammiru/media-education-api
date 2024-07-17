@@ -87,7 +87,9 @@ const getRegisteredUsers = async (
   next: NextFunction
 ) => {
   try {
-    const registeredUsers = trainingData.getRegisteredUsers(req.params.id);
+    const registeredUsers = await trainingData.getRegisteredUsers(
+      req.params.id
+    );
     return res.status(200).json(responseBody("OK", null, registeredUsers));
   } catch (error) {
     next(error);
