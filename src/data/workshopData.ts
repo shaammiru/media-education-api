@@ -100,7 +100,7 @@ const getRegisteredUsers = async (id: string) => {
         some: {
           detailOrders: {
             some: {
-              webinarId: id,
+              workshopId: id,
             },
           },
         },
