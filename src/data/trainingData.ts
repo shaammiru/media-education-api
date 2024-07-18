@@ -79,7 +79,7 @@ const getRegisteredUsers = async (id: string) => {
         some: {
           detailOrders: {
             some: {
-              trainingId: id,
+              productId: id,
             },
           },
         },

@@ -28,7 +28,7 @@ enum WorkshopStatus {
   PLAYBACK
 }
 
-enum CartType {
+enum ProductType {
   WEBINAR
   WORKSHOP
   TRAINING
@@ -94,12 +94,10 @@ model Webinar {
   subCategoryId        String?          @map("sub_category_id") @db.Uuid
   createdAt            DateTime         @default(now()) @map("created_at") @db.Timestamptz(6)
   updatedAt            DateTime         @default(now()) @updatedAt @map("updated_at") @db.Timestamptz(6)
-  carts                Cart[]           @relation("carts.product_id_TO_webinars")
-  DetailOrder          DetailOrder[]    @relation("detail_orders.webinar_id_TO_webinars")
-  webinarHistories     WebinarHistory[] @relation("webinar_histories.webinar_id_TO_webinars")
   category             Category?        @relation("webinars.category_id_TO_categories", fields: [categoryId], references: [id], onUpdate: SetNull)
-  lastWebinarHistory   WebinarHistory   @relation("webinars.last_webinar_history_id_TO_webinar_histories", fields: [lastWebinarHistoryId], references: [id], onUpdate: Restrict)
   subCategory          SubCategory?     @relation("webinars.sub_category_id_TO_sub_categories", fields: [subCategoryId], references: [id], onUpdate: SetNull)
+  webinarHistories     WebinarHistory[] @relation("webinar_histories.webinar_id_TO_webinars")
+  lastWebinarHistory   WebinarHistory   @relation("webinars.last_webinar_history_id_TO_webinar_histories", fields: [lastWebinarHistoryId], references: [id], onUpdate: Restrict)
 
   @@map("webinars")
 }
@@ -133,8 +131,6 @@ model Workshop {
   createdAt             DateTime          @default(now()) @map("created_at") @db.Timestamptz(6)
   updatedAt             DateTime          @default(now()) @updatedAt @map("updated_at") @db.Timestamptz(6)
   playbackUrl           String?           @map("playback_url")
-  carts                 Cart[]            @relation("carts.workshop_id_TO_workshops")
-  DetailOrder           DetailOrder[]     @relation("detail_orders.workshop_id_TO_workshops")
   workshopHistories     WorkshopHistory[] @relation("workshop_histories.workshop_id_TO_workshops")
   category              Category?         @relation("workshops.category_id_TO_categories", fields: [categoryId], references: [id], onUpdate: SetNull)
   lastWorkshopHistory   WorkshopHistory   @relation("workshops.last_workshop_history_id_TO_workshop_histories", fields: [lastWorkshopHistoryId], references: [id], onUpdate: Restrict)
@@ -180,8 +176,6 @@ model Training {
   createdAt             DateTime           @default(now()) @map("created_at") @db.Timestamptz(6)
   updatedAt             DateTime           @default(now()) @updatedAt @map("updated_at") @db.Timestamptz(6)
   showPrice             Boolean?           @map("show_price")
-  carts                 Cart[]             @relation("carts.training_id_TO_trainings")
-  DetailOrder           DetailOrder[]      @relation("detail_orders.training_id_TO_trainings")
   trainingHistories     TrainingHistory[]  @relation("training_histories.training_id_TO_trainings")
   category              Category?          @relation("trainings.category_id_TO_categories", fields: [categoryId], references: [id], onUpdate: SetNull)
   lastTrainingHistory   TrainingHistory    @relation("trainings.last_training_history_id_TO_training_histories", fields: [lastTrainingHistoryId], references: [id], onUpdate: Restrict)
@@ -205,18 +199,13 @@ model TrainingHistory {
 }
 
 model Cart {
-  id         String    @id @default(uuid()) @db.Uuid
-  type       CartType  @map("type")
-  accountId  String    @map("account_id") @db.Uuid
-  webinarId  String?   @map("webinar_id") @db.Uuid
-  workshopId String?   @map("workshop_id") @db.Uuid
-  createdAt  DateTime  @default(now()) @map("created_at") @db.Timestamptz(6)
-  updatedAt  DateTime  @default(now()) @updatedAt @map("updated_at") @db.Timestamptz(6)
-  trainingId String?   @map("training_id") @db.Uuid
-  account    Account   @relation("carts.account_id_TO_accounts", fields: [accountId], references: [id], onDelete: Cascade, onUpdate: NoAction)
-  training   Training? @relation("carts.training_id_TO_trainings", fields: [trainingId], references: [id], onUpdate: NoAction)
-  webinar    Webinar?  @relation("carts.product_id_TO_webinars", fields: [webinarId], references: [id], onUpdate: NoAction)
-  workshop   Workshop? @relation("carts.workshop_id_TO_workshops", fields: [workshopId], references: [id], onUpdate: NoAction)
+  id           String      @id @default(uuid()) @db.Uuid
+  product_type ProductType @map("product_type")
+  accountId    String      @map("account_id") @db.Uuid
+  productId    String      @map("product_id") @db.Uuid
+  createdAt    DateTime    @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt    DateTime    @default(now()) @updatedAt @map("updated_at") @db.Timestamptz(6)
+  account      Account     @relation("carts.account_id_TO_accounts", fields: [accountId], references: [id], onDelete: Cascade, onUpdate: NoAction)
 
   @@map("carts")
 }
@@ -252,18 +241,13 @@ model Order {
 }
 
 model DetailOrder {
-  id         String    @id @default(uuid()) @db.Uuid
-  type       CartType  @map("type")
-  orderId    String    @map("order_id") @db.Uuid
-  webinarId  String?   @map("webinar_id") @db.Uuid
-  workshopId String?   @map("workshop_id") @db.Uuid
-  trainingId String?   @map("training_id") @db.Uuid
-  createdAt  DateTime  @default(now()) @map("created_at") @db.Timestamptz(6)
-  updatedAt  DateTime  @default(now()) @updatedAt @map("updated_at") @db.Timestamptz(6)
-  order      Order     @relation("detail_orders.order_id_TO_orders", fields: [orderId], references: [id], onDelete: Cascade, onUpdate: NoAction)
-  training   Training? @relation("detail_orders.training_id_TO_trainings", fields: [trainingId], references: [id], onUpdate: NoAction)
-  webinar    Webinar?  @relation("detail_orders.webinar_id_TO_webinars", fields: [webinarId], references: [id], onUpdate: NoAction)
-  workshop   Workshop? @relation("detail_orders.workshop_id_TO_workshops", fields: [workshopId], references: [id], onUpdate: NoAction)
+  id           String      @id @default(uuid()) @db.Uuid
+  product_type ProductType @map("product_type")
+  orderId      String      @map("order_id") @db.Uuid
+  productId    String      @map("product_id") @db.Uuid
+  createdAt    DateTime    @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt    DateTime    @default(now()) @updatedAt @map("updated_at") @db.Timestamptz(6)
+  order        Order       @relation("detail_orders.order_id_TO_orders", fields: [orderId], references: [id], onDelete: Cascade, onUpdate: NoAction)
 
   @@map("detail_orders")
 }
