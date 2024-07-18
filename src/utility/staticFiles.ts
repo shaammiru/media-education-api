@@ -12,7 +12,6 @@ const upload = async (file: Express.Multer.File, directory: string) => {
   }`;
   const filePath = path.join(staticDirectory, directory, fileName);
   await fs.writeFile(filePath, file.buffer);
-  console.log(`/${baseDirectory}/${directory}/${fileName}`);
   return `${process.env.HOST}/${baseDirectory}/${directory}/${fileName}`;
 };
 
