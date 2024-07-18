@@ -10,7 +10,7 @@ import cartRouter from "./cartRouter";
 import faqRouter from "./faqRouter";
 import videoRouter from "./videoRouter";
 import bannerRouter from "./bannerRouter";
-import orderRouter from "./orderRouter";
+// import orderRouter from "./orderRouter";
 
 const router = Router();
 
@@ -25,6 +25,6 @@ router.use("/carts", cartRouter);
 router.use("/faqs", faqRouter);
 router.use("/videos", videoRouter);
 router.use("/banners", bannerRouter);
-router.use("/orders", orderRouter);
+// router.use("/orders", orderRouter);
 
 export default router;
