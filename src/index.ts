@@ -1,12 +1,10 @@
 import "dotenv/config";
-import path from "path";
 import express from "express";
 import cors from "cors";
 import helmet from "helmet";
 import compression from "compression";
 import cookieParser from "cookie-parser";
-import swaggerUi from "swagger-ui-express";
-import swaggerDocument from "../docs/swagger.json";
+import staticFiles from "./utility/staticFiles";
 
 // Error handling middleware
 import {
@@ -29,21 +27,14 @@ app.use(helmet());
 app.use(compression());
 app.use(cookieParser());
 
+const baseEndpoint =
+  process.env.NODE_ENV === "development" ? "/api/dev" : "/api";
+
 // Load static files
-app.use("/api/uploads", express.static(path.join(__dirname, "../api/uploads")));
+app.use(`${baseEndpoint}/uploads`, express.static(staticFiles.staticDirectory));
 
 // Load routes
-app.use("/api/v1", router);
-
-// Load swagger documentation
-app.use(
-  "/v1/docs",
-  swaggerUi.serve,
-  swaggerUi.setup(swaggerDocument, {
-    customCssUrl:
-      "https://cdnjs.cloudflare.com/ajax/libs/swagger-ui/5.11.3/swagger-ui.css",
-  })
-);
+app.use(`${baseEndpoint}/v1`, router);
 
 // Load error handler middlewares
 app.use(jsonErrorHandler);
@@ -52,6 +43,7 @@ app.use(prismaErrorHandler);
 app.use(multerErrorHandler);
 app.use(errorHandler);
 
+// Run the server
 app.listen(process.env.PORT, () => {
   console.log(`Server is running on port http://localhost:${process.env.PORT}`);
 });

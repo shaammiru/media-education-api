@@ -14,6 +14,7 @@ import {
   getById,
   updateById,
   deleteById,
+  getRegisteredUsers,
 } from "../controller/webinarController";
 
 const router = Router();
@@ -28,8 +29,11 @@ router.post(
   validateBody(webinarSchema),
   create
 );
+
 router.get("/", list);
+
 router.get("/:id", getById);
+
 router.put(
   "/:id",
   verifyToken,
@@ -38,6 +42,9 @@ router.put(
   validateBody(webinarUpdateSchema),
   updateById
 );
+
 router.delete("/:id", verifyToken, deleteById);
+
+router.get("/:id/registered-users", getRegisteredUsers);
 
 export default router;

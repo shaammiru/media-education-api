@@ -57,6 +57,19 @@ const getById = async (req: Request, res: Response, next: NextFunction) => {
   }
 };
 
+const getRegisteredUsers = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    const registeredUsers = await webinarData.getRegisteredUsers(req.params.id);
+    return res.status(200).json(responseBody("OK", null, registeredUsers));
+  } catch (error) {
+    next(error);
+  }
+};
+
 const updateById = async (req: Request, res: Response, next: NextFunction) => {
   try {
     if (req.file) {
@@ -113,4 +126,4 @@ const deleteById = async (req: Request, res: Response, next: NextFunction) => {
   }
 };
 
-export { create, list, getById, updateById, deleteById };
+export { create, list, getById, getRegisteredUsers, updateById, deleteById };

@@ -59,6 +59,21 @@ const getById = async (req: Request, res: Response, next: NextFunction) => {
   }
 };
 
+const getRegisteredUsers = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    const registeredUsers = await workshopData.getRegisteredUsers(
+      req.params.id
+    );
+    return res.status(200).json(responseBody("OK", null, registeredUsers));
+  } catch (error) {
+    next(error);
+  }
+};
+
 const updateById = async (req: Request, res: Response, next: NextFunction) => {
   try {
     if (req.file) {
@@ -139,4 +154,12 @@ const uploadPlayback = async (
   }
 };
 
-export { create, list, getById, updateById, deleteById, uploadPlayback };
+export {
+  create,
+  list,
+  getById,
+  getRegisteredUsers,
+  updateById,
+  deleteById,
+  uploadPlayback,
+};
