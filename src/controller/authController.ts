@@ -6,8 +6,6 @@ import {
   generateToken,
   hashPassword,
 } from "../middleware/auth";
-import email from "../utility/email";
-import crypto from "crypto";
 import jwt from "jsonwebtoken";
 
 const register = async (req: Request, res: Response, next: NextFunction) => {
@@ -117,67 +115,6 @@ const validateToken = (req: any, res: Response, next: NextFunction) => {
   }
 };
 
-const forgotPassword = async (
-  req: Request,
-  res: Response,
-  next: NextFunction
-) => {
-  try {
-    const user = await accountData.getByEmail(req.body.email);
-
-    if (!user) {
-      return res
-        .status(404)
-        .json(responseBody("Account not found", null, null));
-    }
-
-    const resetToken = crypto.randomBytes(32).toString("hex");
-    const passwordResetToken = crypto
-      .createHash("sha256")
-      .update(resetToken)
-      .digest("hex");
-    const passwordResetExpiry = new Date(Date.now() + 10 * 60 * 1000);
-
-    await accountData.updateById(user.id, {
-      passwordResetToken,
-      passwordResetExpiry,
-    });
-
-    const protocol = req.protocol;
-    const host = req.get("host");
-    const resetURL = `${protocol}://${host}/v1/auth/reset-password/${resetToken}`;
-    const htmlMessage = `
-      <h1>Edutrain Password Reset</h1>
-      <p>Click the link below to reset your password</p>
-      <a href="${resetURL}" target="_blank">Reset Password</a>
-      <p>This link will expire in 10 minutes</p>
-      <p>If you did not request a password reset, please ignore this email</p>`;
-    await email.send({
-      email: user.email,
-      subject: "Edutrain Password Reset",
-      htmlMessage,
-    });
-
-    return res
-      .status(200)
-      .json(responseBody("Reset password email sent", null, null));
-  } catch (error) {
-    next(error);
-  }
-};
-
-const resetPassword = async (
-  req: Request,
-  res: Response,
-  next: NextFunction
-) => {
-  try {
-    // Logic here
-  } catch (error) {
-    next(error);
-  }
-};
-
 export {
   register,
   registerAdmin,
@@ -185,6 +122,4 @@ export {
   logout,
   getCurrentUser,
   validateToken,
-  forgotPassword,
-  resetPassword,
 };

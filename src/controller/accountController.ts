@@ -87,6 +87,34 @@ const updateProfile = async (
   }
 };
 
+const getProfile = async (req: any, res: Response, next: NextFunction) => {
+  try {
+    const userId = req.user.id;
+    const user = await accountData.getById(userId);
+
+    if (!user) {
+      return res.status(404).json(responseBody("User not found", null, null));
+    }
+
+    const formattedUser = {
+      id: user.id,
+      fullname: user.fullname,
+      username: user.username,
+      email: user.email,
+      phone: user.phone,
+      address: user.address,
+      birthdate: user.birthdate,
+      organization: user.organization,
+      university: user.university,
+      gender: user.gender,
+    };
+
+    return res.status(200).json(responseBody("OK", null, formattedUser));
+  } catch (error) {
+    next(error);
+  }
+};
+
 export {
   create,
   list,
@@ -95,4 +123,5 @@ export {
   deleteById,
   listAdmin,
   updateProfile,
+  getProfile,
 };

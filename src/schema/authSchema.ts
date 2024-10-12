@@ -16,19 +16,4 @@ const validateTokenSchema = joi.object({
   token: joi.string().required(),
 });
 
-const forgotPasswordSchema = joi.object({
-  email: joi.string().email().required(),
-});
-
-const resetPasswordSchema = joi.object({
-  token: joi.string().required(),
-  password: joi.string().min(8).required(),
-});
-
-export {
-  registerSchema,
-  loginSchema,
-  validateTokenSchema,
-  forgotPasswordSchema,
-  resetPasswordSchema,
-};
+export { registerSchema, loginSchema, validateTokenSchema };
