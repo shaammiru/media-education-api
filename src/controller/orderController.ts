@@ -1,10 +1,61 @@
 import { NextFunction, Request, Response } from "express";
 import orderData from "../data/orderData";
+import webinarData from "../data/webinarData";
+import workshopData from "../data/workshopData";
+import trainingData from "../data/trainingData";
+
+const checkEventAvaibility = async (eventType: string, eventId: string) => {
+  let isValid = true;
+  if (eventType == "WEBINAR") {
+    const webinar = await webinarData.getById(eventId);
+    if (!webinar) {
+      isValid = false;
+    }
+  } else if (eventType == "WORKSHOP") {
+    const workshop = await workshopData.getById(eventId);
+    if (!workshop) {
+      isValid = false;
+    }
+  } else {
+    const training = await trainingData.getById(eventId);
+    if (!training) {
+      isValid = false;
+    }
+  }
+
+  return isValid;
+};
 
 const create = async (req: Request, res: Response, next: NextFunction) => {
   try {
-    const order = await orderData.create(req.body);
-    return res.status(201).json({ message: "Order created", data: order });
+    const isValid = await checkEventAvaibility(
+      req.body.eventType,
+      req.body.eventId
+    );
+    if (isValid) {
+      const order = await orderData.create(req.body);
+      return res.status(201).json({ message: "Order created", data: order });
+    } else {
+      return res.status(404).json({ error: "Event not found" });
+    }
+  } catch (error) {
+    next(error);
+  }
+};
+
+const userCreate = async (req: any, res: Response, next: NextFunction) => {
+  try {
+    const isValid = await checkEventAvaibility(
+      req.body.eventType,
+      req.body.eventId
+    );
+    if (isValid) {
+      req.body.accountId = req.user.id;
+      const order = await orderData.create(req.body);
+      return res.status(201).json({ message: "Order created", data: order });
+    } else {
+      return res.status(404).json({ error: "Event not found" });
+    }
   } catch (error) {
     next(error);
   }
@@ -52,4 +103,4 @@ const deleteById = async (req: Request, res: Response, next: NextFunction) => {
   }
 };
 
-export { create, list, getById, updateById, deleteById };
+export { create, userCreate, list, getById, updateById, deleteById };

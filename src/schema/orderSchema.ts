@@ -3,8 +3,16 @@ import joi from "joi";
 const eventTypeEnum = ["WEBINAR", "WORKSHOP", "TRAINING"];
 
 const orderSchema = joi.object({
-  userId: joi.string().required(),
-  eventId: joi.string().required(),
+  accountId: joi.string().uuid({ version: "uuidv4" }).required(),
+  eventId: joi.string().uuid({ version: "uuidv4" }).required(),
+  eventType: joi
+    .string()
+    .valid(...eventTypeEnum)
+    .required(),
+});
+
+const userOrderSchema = joi.object({
+  eventId: joi.string().uuid({ version: "uuidv4" }).required(),
   eventType: joi
     .string()
     .valid(...eventTypeEnum)
@@ -19,9 +27,9 @@ const orderListSchema = joi.object({
 });
 
 const orderUpdateSchema = joi.object({
-  userId: joi.string(),
-  eventId: joi.string(),
+  accountId: joi.string().uuid({ version: "uuidv4" }),
+  eventId: joi.string().uuid({ version: "uuidv4" }),
   eventType: joi.string().valid(...eventTypeEnum),
 });
 
-export { orderSchema, orderListSchema, orderUpdateSchema };
+export { orderSchema, userOrderSchema, orderListSchema, orderUpdateSchema };

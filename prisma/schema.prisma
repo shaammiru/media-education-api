@@ -89,6 +89,7 @@ model Webinar {
   eventStatus          EventStatus      @map("event_status")
   maxAttendees         Int              @map("max_attendees")
   lastWebinarHistoryId String           @unique @map("last_webinar_history_id") @db.Uuid
+  eventType            ProductType      @default(WEBINAR) @map("event_type")
   certificate          String?
   categoryId           String?          @map("category_id") @db.Uuid
   subCategoryId        String?          @map("sub_category_id") @db.Uuid
@@ -125,6 +126,7 @@ model Workshop {
   startTime             DateTime?         @map("start_time") @db.Timestamptz(6)
   endTime               DateTime?         @map("end_time") @db.Timestamptz(6)
   lastWorkshopHistoryId String            @unique @map("last_workshop_history_id") @db.Uuid
+  eventType             ProductType       @default(WORKSHOP) @map("event_type")
   certificate           String?
   categoryId            String?           @map("category_id") @db.Uuid
   subCategoryId         String?           @map("sub_category_id") @db.Uuid
@@ -171,6 +173,7 @@ model Training {
   startTime             DateTime?          @map("start_time") @db.Timestamptz(6)
   endTime               DateTime?          @map("end_time") @db.Timestamptz(6)
   lastTrainingHistoryId String             @unique @map("last_training_history_id") @db.Uuid
+  eventType             ProductType        @default(WEBINAR) @map("event_type")
   categoryId            String?            @map("category_id") @db.Uuid
   subCategoryId         String?            @map("sub_category_id") @db.Uuid
   createdAt             DateTime           @default(now()) @map("created_at") @db.Timestamptz(6)

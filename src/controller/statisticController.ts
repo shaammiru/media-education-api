@@ -7,11 +7,12 @@ const getDashboardData = async (
   next: NextFunction
 ) => {
   try {
-    const userCount = statisticData.getTotalRegisteredUser();
-    const eventCount = statisticData.getEventCount();
+    const userCount = await statisticData.getTotalRegisteredUser();
+    const eventCount = await statisticData.getEventCount();
+
     return res
       .status(200)
-      .json({ message: "Dashboard data", data: { ...userCount, eventCount } });
+      .json({ message: "Dashboard data", data: { userCount, ...eventCount } });
   } catch (error) {
     next(error);
   }

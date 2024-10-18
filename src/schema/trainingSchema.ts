@@ -16,7 +16,7 @@ const trainingSchema = joi.object({
   startTime: joi.date().iso().required(),
   endTime: joi.date().iso().required(),
   price: joi.number().positive().required(),
-  discount: joi.number().integer().min(0).max(100).required(),
+  discount: joi.number().integer().min(0).max(100),
   categoryName: joi.string().allow(null),
   categoryId: joi.string().uuid({ version: "uuidv4" }).allow(""),
   subCategoryName: joi.string().allow(null),

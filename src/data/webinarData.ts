@@ -98,15 +98,16 @@ const getRegisteredUsers = async (id: string) => {
     where: {
       orders: {
         some: {
-          eventType: "WEBINAR",
+          eventId: id,
         },
       },
     },
     select: {
       fullname: true,
-      organization: true,
       email: true,
       phone: true,
+      organization: true,
+      university: true,
       createdAt: true,
     },
   });
