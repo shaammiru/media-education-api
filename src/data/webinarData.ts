@@ -98,11 +98,7 @@ const getRegisteredUsers = async (id: string) => {
     where: {
       orders: {
         some: {
-          detailOrders: {
-            some: {
-              productId: id,
-            },
-          },
+          eventType: "WEBINAR",
         },
       },
     },

@@ -11,7 +11,8 @@ import faqRouter from "./faqRouter";
 import videoRouter from "./videoRouter";
 import bannerRouter from "./bannerRouter";
 import profileRouter from "./profileRouter";
-// import orderRouter from "./orderRouter";
+import orderRouter from "./orderRouter";
+import statisticRouter from "./statisticRouter";
 
 const router = Router();
 
@@ -27,6 +28,7 @@ router.use("/faqs", faqRouter);
 router.use("/videos", videoRouter);
 router.use("/banners", bannerRouter);
 router.use("/profile", profileRouter);
-// router.use("/orders", orderRouter);
+router.use("/orders", orderRouter);
+router.use("/statistics", statisticRouter);
 
 export default router;
