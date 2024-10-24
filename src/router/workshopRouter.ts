@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { verifyToken } from "../middleware/auth";
+import { verifyToken, checkToken } from "../middleware/auth";
 import { imageUpload, videoUpload } from "../middleware/multer";
 import { workshopSchema, workshopUpdateSchema } from "../schema/workshopSchema";
 import {
@@ -30,8 +30,8 @@ router.post(
   validateBody(workshopSchema),
   create
 );
-router.get("/", list);
-router.get("/:id", getById);
+router.get("/", checkToken, list);
+router.get("/:id", checkToken, getById);
 router.put(
   "/:id",
   verifyToken,

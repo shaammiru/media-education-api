@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { verifyToken } from "../middleware/auth";
+import { verifyToken, checkToken } from "../middleware/auth";
 import { documentUpload, imageUpload } from "../middleware/multer";
 import {
   trainingMaterialSchema,
@@ -28,8 +28,8 @@ const router = Router();
 
 router.param("id", validateParams());
 
-router.get("/", list);
-router.get("/:id", getById);
+router.get("/", checkToken, list);
+router.get("/:id", checkToken, getById);
 router.get("/:id/materials", listMaterial);
 
 router.use(verifyToken);

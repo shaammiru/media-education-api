@@ -32,6 +32,19 @@ const getById = async (id: string) => {
   return order;
 };
 
+const getByUserEventId = async (accountId: string, eventId: string) => {
+  const order = await prisma.order.findFirst({
+    where: {
+      accountId: accountId,
+      eventId: eventId,
+    },
+  });
+
+  if (!order) return;
+
+  return order;
+};
+
 const updateById = async (id: string, orderData: any) => {
   const order = await prisma.order.update({
     where: {
@@ -53,4 +66,11 @@ const deleteById = async (id: string) => {
   return order;
 };
 
-export default { create, list, getById, updateById, deleteById };
+export default {
+  create,
+  list,
+  getById,
+  getByUserEventId,
+  updateById,
+  deleteById,
+};

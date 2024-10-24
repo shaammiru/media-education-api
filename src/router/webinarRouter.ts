@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { verifyToken } from "../middleware/auth";
+import { verifyToken, checkToken } from "../middleware/auth";
 import { imageUpload } from "../middleware/multer";
 import { webinarSchema, webinarUpdateSchema } from "../schema/webinarSchema";
 import {
@@ -30,9 +30,9 @@ router.post(
   create
 );
 
-router.get("/", list);
+router.get("/", checkToken, list);
 
-router.get("/:id", getById);
+router.get("/:id", checkToken, getById);
 
 router.put(
   "/:id",

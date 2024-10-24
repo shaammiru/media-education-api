@@ -4,6 +4,7 @@ import staticFiles from "../utility/staticFiles";
 import responseBody from "../utility/responseBody";
 import categoryData from "../data/categoryData";
 import subCategoryData from "../data/subCategoryData";
+import orderData from "../data/orderData";
 
 const create = async (req: Request, res: Response, next: NextFunction) => {
   let bannerUrl = "";
@@ -44,16 +45,31 @@ const list = async (req: Request, res: Response, next: NextFunction) => {
   }
 };
 
-const getById = async (req: Request, res: Response, next: NextFunction) => {
+const getById = async (req: any, res: Response, next: NextFunction) => {
   try {
+    let isRegistered = false;
     const workshop = await workshopData.getById(req.params.id);
+
     if (!workshop) {
       return res
         .status(404)
         .json(responseBody("Workshop not found", null, null));
     }
 
-    return res.status(200).json(responseBody("OK", null, workshop));
+    if (req.user) {
+      const order = await orderData.getByUserEventId(
+        req.user.id,
+        req.params.id
+      );
+
+      if (order) {
+        isRegistered = true;
+      }
+    }
+
+    return res
+      .status(200)
+      .json(responseBody("OK", null, { ...workshop, isRegistered }));
   } catch (error) {
     next(error);
   }

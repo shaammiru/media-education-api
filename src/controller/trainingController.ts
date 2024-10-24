@@ -5,6 +5,7 @@ import responseBody from "../utility/responseBody";
 import categoryData from "../data/categoryData";
 import subCategoryData from "../data/subCategoryData";
 import trainingMaterialData from "../data/trainingMaterialData";
+import orderData from "../data/orderData";
 
 const create = async (req: Request, res: Response, next: NextFunction) => {
   let bannerUrl = "";
@@ -66,16 +67,31 @@ const list = async (req: Request, res: Response, next: NextFunction) => {
   }
 };
 
-const getById = async (req: Request, res: Response, next: NextFunction) => {
+const getById = async (req: any, res: Response, next: NextFunction) => {
   try {
+    let isRegistered = false;
     const training = await trainingData.getById(req.params.id);
+
     if (!training) {
       return res
         .status(404)
         .json(responseBody("Training not found", null, null));
     }
 
-    return res.status(200).json(responseBody("OK", null, training));
+    if (req.user) {
+      const order = await orderData.getByUserEventId(
+        req.user.id,
+        req.params.id
+      );
+
+      if (order) {
+        isRegistered = true;
+      }
+    }
+
+    return res
+      .status(200)
+      .json(responseBody("OK", null, { ...training, isRegistered }));
   } catch (error) {
     next(error);
   }
