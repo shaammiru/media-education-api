@@ -4,35 +4,39 @@ import webinarData from "../data/webinarData";
 import workshopData from "../data/workshopData";
 import trainingData from "../data/trainingData";
 
-const checkEventAvaibility = async (eventType: string, eventId: string) => {
-  let isValid = true;
-  if (eventType == "WEBINAR") {
-    const webinar = await webinarData.getById(eventId);
-    if (!webinar) {
-      isValid = false;
-    }
-  } else if (eventType == "WORKSHOP") {
-    const workshop = await workshopData.getById(eventId);
-    if (!workshop) {
-      isValid = false;
-    }
-  } else {
-    const training = await trainingData.getById(eventId);
-    if (!training) {
-      isValid = false;
-    }
+const checkEventAvaibility = async (eventId: string) => {
+  let isValid = false;
+  let eventType = "";
+
+  const webinar = await webinarData.getById(eventId);
+  if (webinar) {
+    isValid = true;
+    eventType = "WEBINAR";
+    return { isValid, eventType };
   }
 
-  return isValid;
+  const workshop = await workshopData.getById(eventId);
+  if (workshop) {
+    isValid = true;
+    eventType = "WORKSHOP";
+    return { isValid, eventType };
+  }
+
+  const training = await trainingData.getById(eventId);
+  if (training) {
+    isValid = true;
+    eventType = "TRAINING";
+    return { isValid, eventType };
+  }
+
+  return { isValid, eventType };
 };
 
 const create = async (req: Request, res: Response, next: NextFunction) => {
   try {
-    const isValid = await checkEventAvaibility(
-      req.body.eventType,
-      req.body.eventId
-    );
-    if (isValid) {
+    const event = await checkEventAvaibility(req.body.eventId);
+    if (event.isValid) {
+      req.body.eventType = event.eventType;
       const order = await orderData.create(req.body);
       return res.status(201).json({ message: "Order created", data: order });
     } else {
@@ -45,12 +49,11 @@ const create = async (req: Request, res: Response, next: NextFunction) => {
 
 const userCreate = async (req: any, res: Response, next: NextFunction) => {
   try {
-    const isValid = await checkEventAvaibility(
-      req.body.eventType,
-      req.body.eventId
-    );
-    if (isValid) {
+    const event = await checkEventAvaibility(req.body.eventId);
+    console.log(event.isValid);
+    if (event.isValid) {
       req.body.accountId = req.user.id;
+      req.body.eventType = event.eventType;
       const order = await orderData.create(req.body);
       return res.status(201).json({ message: "Order created", data: order });
     } else {

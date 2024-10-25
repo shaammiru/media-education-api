@@ -66,7 +66,7 @@ const list = async (req: any, res: Response, next: NextFunction) => {
     if (req.user) {
       const trainingOrders = await orderData.getByEventType(
         req.user.id,
-        "WEBINAR"
+        "TRAINING"
       );
 
       for (let i = 0; i < trainings.length; i++) {

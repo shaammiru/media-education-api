@@ -5,18 +5,10 @@ const eventTypeEnum = ["WEBINAR", "WORKSHOP", "TRAINING"];
 const orderSchema = joi.object({
   accountId: joi.string().uuid({ version: "uuidv4" }).required(),
   eventId: joi.string().uuid({ version: "uuidv4" }).required(),
-  eventType: joi
-    .string()
-    .valid(...eventTypeEnum)
-    .required(),
 });
 
 const userOrderSchema = joi.object({
   eventId: joi.string().uuid({ version: "uuidv4" }).required(),
-  eventType: joi
-    .string()
-    .valid(...eventTypeEnum)
-    .required(),
 });
 
 const orderListSchema = joi.object({
