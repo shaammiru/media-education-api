@@ -36,12 +36,32 @@ const create = async (req: Request, res: Response, next: NextFunction) => {
 
 const list = async (req: any, res: Response, next: NextFunction) => {
   try {
+    const webinars = await webinarData.list();
+    let modWebinars: [{ [k: string]: any }] = [{}];
+
     if (req.user) {
-      return res.status(200);
+      const webinarOrder = await orderData.getByEventType(
+        req.user.id,
+        "WEBINAR"
+      );
+
+      for (let i = 0; i < webinars.length; i++) {
+        modWebinars[i] = webinars[i];
+        modWebinars[i].isRegistered = false;
+        for (let j = 0; j < webinarOrder.length; j++) {
+          if (webinars[i].id == webinarOrder[j].eventId) {
+            modWebinars[i].isRegistered = true;
+          }
+        }
+      }
     } else {
-      const webinars = await webinarData.list();
-      return res.status(200).json(responseBody("OK", null, webinars));
+      for (let i = 0; i < webinars.length; i++) {
+        modWebinars[i] = webinars[i];
+        modWebinars[i].isRegistered = false;
+      }
     }
+
+    return res.status(200).json(responseBody("OK", null, modWebinars));
   } catch (error) {
     next(error);
   }

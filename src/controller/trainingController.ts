@@ -58,10 +58,34 @@ const create = async (req: Request, res: Response, next: NextFunction) => {
   }
 };
 
-const list = async (req: Request, res: Response, next: NextFunction) => {
+const list = async (req: any, res: Response, next: NextFunction) => {
   try {
     const trainings = await trainingData.list();
-    return res.status(200).json(responseBody("OK", null, trainings));
+    let modTrainings: [{ [k: string]: any }] = [{}];
+
+    if (req.user) {
+      const trainingOrders = await orderData.getByEventType(
+        req.user.id,
+        "WEBINAR"
+      );
+
+      for (let i = 0; i < trainings.length; i++) {
+        modTrainings[i] = trainings[i];
+        modTrainings[i].isRegistered = false;
+        for (let j = 0; j < trainingOrders.length; j++) {
+          if (trainings[i].id == trainingOrders[j].eventId) {
+            modTrainings[i].isRegistered = true;
+          }
+        }
+      }
+    } else {
+      for (let i = 0; i < trainings.length; i++) {
+        modTrainings[i] = trainings[i];
+        modTrainings[i].isRegistered = false;
+      }
+    }
+
+    return res.status(200).json(responseBody("OK", null, modTrainings));
   } catch (error) {
     next(error);
   }

@@ -36,10 +36,34 @@ const create = async (req: Request, res: Response, next: NextFunction) => {
   }
 };
 
-const list = async (req: Request, res: Response, next: NextFunction) => {
+const list = async (req: any, res: Response, next: NextFunction) => {
   try {
     const workshops = await workshopData.list();
-    return res.status(200).json(responseBody("OK", null, workshops));
+    let modWorkshop: [{ [k: string]: any }] = [{}];
+
+    if (req.user) {
+      const workshopOrders = await orderData.getByEventType(
+        req.user.id,
+        "WORKSHOP"
+      );
+
+      for (let i = 0; i < workshops.length; i++) {
+        modWorkshop[i] = workshops[i];
+        modWorkshop[i].isRegistered = false;
+        for (let j = 0; j < workshopOrders.length; j++) {
+          if (workshops[i].id == workshopOrders[j].eventId) {
+            modWorkshop[i].isRegistered = true;
+          }
+        }
+      }
+    } else {
+      for (let i = 0; i < workshops.length; i++) {
+        modWorkshop[i] = workshops[i];
+        modWorkshop[i].isRegistered = false;
+      }
+    }
+
+    return res.status(200).json(responseBody("OK", null, modWorkshop));
   } catch (error) {
     next(error);
   }
