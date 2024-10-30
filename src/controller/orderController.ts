@@ -7,29 +7,45 @@ import trainingData from "../data/trainingData";
 const checkEventAvaibility = async (eventId: string) => {
   let isValid = false;
   let eventType = "";
+  let isPaid = false;
 
   const webinar = await webinarData.getById(eventId);
   if (webinar) {
     isValid = true;
     eventType = "WEBINAR";
-    return { isValid, eventType };
+
+    if (webinar.lastWebinarHistory.price.greaterThan(0)) {
+      isPaid = true;
+    }
+
+    return { isValid, eventType, isPaid };
   }
 
   const workshop = await workshopData.getById(eventId);
   if (workshop) {
     isValid = true;
     eventType = "WORKSHOP";
-    return { isValid, eventType };
+
+    if (workshop.lastWorkshopHistory.price.greaterThan(0)) {
+      isPaid = true;
+    }
+
+    return { isValid, eventType, isPaid };
   }
 
   const training = await trainingData.getById(eventId);
   if (training) {
     isValid = true;
     eventType = "TRAINING";
-    return { isValid, eventType };
+
+    if (training.lastTrainingHistory.price.greaterThan(0)) {
+      isPaid = true;
+    }
+
+    return { isValid, eventType, isPaid };
   }
 
-  return { isValid, eventType };
+  return { isValid, eventType, isPaid };
 };
 
 const create = async (req: Request, res: Response, next: NextFunction) => {
@@ -37,6 +53,7 @@ const create = async (req: Request, res: Response, next: NextFunction) => {
     const event = await checkEventAvaibility(req.body.eventId);
     if (event.isValid) {
       req.body.eventType = event.eventType;
+      req.body.isPaid = event.isPaid;
       const order = await orderData.create(req.body);
       return res.status(201).json({ message: "Order created", data: order });
     } else {
@@ -50,10 +67,10 @@ const create = async (req: Request, res: Response, next: NextFunction) => {
 const userCreate = async (req: any, res: Response, next: NextFunction) => {
   try {
     const event = await checkEventAvaibility(req.body.eventId);
-    console.log(event.isValid);
     if (event.isValid) {
       req.body.accountId = req.user.id;
       req.body.eventType = event.eventType;
+      req.body.isPaid = event.isPaid;
       const order = await orderData.create(req.body);
       return res.status(201).json({ message: "Order created", data: order });
     } else {

@@ -48,9 +48,11 @@ const list = async (req: any, res: Response, next: NextFunction) => {
       for (let i = 0; i < webinars.length; i++) {
         modWebinars[i] = webinars[i];
         modWebinars[i].isRegistered = false;
+        modWebinars[i].isVerified = false;
         for (let j = 0; j < webinarOrder.length; j++) {
           if (webinars[i].id == webinarOrder[j].eventId) {
             modWebinars[i].isRegistered = true;
+            modWebinars[i].isVerified = webinarOrder[j].isVerified;
           }
         }
       }
@@ -58,6 +60,7 @@ const list = async (req: any, res: Response, next: NextFunction) => {
       for (let i = 0; i < webinars.length; i++) {
         modWebinars[i] = webinars[i];
         modWebinars[i].isRegistered = false;
+        modWebinars[i].isVerified = false;
       }
     }
 
