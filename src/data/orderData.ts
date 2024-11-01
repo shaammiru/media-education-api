@@ -77,6 +77,19 @@ const deleteById = async (id: string) => {
   return order;
 };
 
+const verifyOrder = async (id: string) => {
+  const order = await prisma.order.update({
+    where: {
+      id: id,
+    },
+    data: {
+      isVerified: true,
+    },
+  });
+
+  return order;
+};
+
 export default {
   create,
   list,
@@ -85,4 +98,5 @@ export default {
   getByUserEventId,
   updateById,
   deleteById,
+  verifyOrder,
 };

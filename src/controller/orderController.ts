@@ -123,4 +123,25 @@ const deleteById = async (req: Request, res: Response, next: NextFunction) => {
   }
 };
 
-export { create, userCreate, list, getById, updateById, deleteById };
+const approveOrder = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    await orderData.verifyOrder(req.params.id);
+    return res.status(200).json({ message: "Order approved" });
+  } catch (error) {
+    next(error);
+  }
+};
+
+export {
+  create,
+  userCreate,
+  list,
+  getById,
+  updateById,
+  deleteById,
+  approveOrder,
+};
