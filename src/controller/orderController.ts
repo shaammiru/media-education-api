@@ -123,11 +123,7 @@ const deleteById = async (req: Request, res: Response, next: NextFunction) => {
   }
 };
 
-const approveOrder = async (
-  req: Request,
-  res: Response,
-  next: NextFunction
-) => {
+const verifyOrder = async (req: Request, res: Response, next: NextFunction) => {
   try {
     await orderData.verifyOrder(req.params.id);
     return res.status(200).json({ message: "Order approved" });
@@ -143,5 +139,5 @@ export {
   getById,
   updateById,
   deleteById,
-  approveOrder,
+  verifyOrder,
 };

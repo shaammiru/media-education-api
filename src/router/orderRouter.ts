@@ -14,7 +14,7 @@ import {
   getById,
   updateById,
   deleteById,
-  approveOrder
+  verifyOrder,
 } from "../controller/orderController";
 
 const router = Router();
@@ -32,6 +32,6 @@ router.get("/", validateBody(orderListSchema), list);
 router.get("/:id", getById);
 router.put("/:id", validateBody(orderUpdateSchema), updateById);
 router.delete("/:id", deleteById);
-router.post("/:id/approve", approveOrder);
+router.post("/:id/verify", verifyOrder);
 
 export default router;
