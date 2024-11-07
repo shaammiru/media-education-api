@@ -47,8 +47,11 @@ const getById = async (req: Request, res: Response, next: NextFunction) => {
 const updateById = async (req: Request, res: Response, next: NextFunction) => {
   try {
     if (req.file) {
-      const bannerUrl = await staticFiles.upload(req.file, "banner/training");
-      req.body.banner = bannerUrl;
+      const materialUrl = await staticFiles.upload(
+        req.file,
+        "material/training"
+      );
+      req.body.url = materialUrl;
     }
 
     const training = await trainingMaterialData.updateById(

@@ -12,12 +12,14 @@ const folders = [
   "/api/uploads/banner/workshop",
   "/api/uploads/banner/training",
   "/api/uploads/banner/index",
-  "/api/uploads/material/banner",
+  "/api/uploads/material/training",
+  "/api/uploads/playback/training",
   "/dist/api/uploads/banner/webinar",
   "/dist/api/uploads/banner/workshop",
   "/dist/api/uploads/banner/training",
   "/dist/api/uploads/banner/index",
-  "/dist/api/uploads/material/banner",
+  "/dist/api/uploads/material/training",
+  "/dist/api/uploads/playback/training",
 ];
 
 function createFolder(folderPath) {
