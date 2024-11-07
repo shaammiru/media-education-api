@@ -63,7 +63,7 @@ const list = async (req: any, res: Response, next: NextFunction) => {
     const trainings = await trainingData.list();
     let modTrainings: [{ [k: string]: any }] = [{}];
 
-    if (req.user) {
+    if (req.user && trainings.length !== 0) {
       const trainingOrders = await orderData.getByEventType(
         req.user.id,
         "TRAINING"
@@ -86,6 +86,10 @@ const list = async (req: any, res: Response, next: NextFunction) => {
         modTrainings[i].isRegistered = false;
         modTrainings[i].isVerified = false;
       }
+    }
+
+    if (trainings.length === 0) {
+      return res.status(200).json(responseBody("OK", null, trainings));
     }
 
     return res.status(200).json(responseBody("OK", null, modTrainings));

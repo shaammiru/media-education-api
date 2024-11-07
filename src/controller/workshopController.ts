@@ -41,7 +41,7 @@ const list = async (req: any, res: Response, next: NextFunction) => {
     const workshops = await workshopData.list();
     let modWorkshop: [{ [k: string]: any }] = [{}];
 
-    if (req.user) {
+    if (req.user && workshops.length !== 0) {
       const workshopOrders = await orderData.getByEventType(
         req.user.id,
         "WORKSHOP"
@@ -64,6 +64,10 @@ const list = async (req: any, res: Response, next: NextFunction) => {
         modWorkshop[i].isRegistered = false;
         modWorkshop[i].isVerified = false;
       }
+    }
+
+    if (workshops.length === 0) {
+      return res.status(200).json(responseBody("OK", null, workshops));
     }
 
     return res.status(200).json(responseBody("OK", null, modWorkshop));
