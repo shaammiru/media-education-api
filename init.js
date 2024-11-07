@@ -1,5 +1,5 @@
-const fs = require('fs');
-const path = require('path');
+const fs = require("fs");
+const path = require("path");
 
 const colors = {
   reset: "\x1b[0m",
@@ -8,12 +8,16 @@ const colors = {
 };
 
 const folders = [
-  '/api/uploads/banner/webinar',
-  '/api/uploads/banner/workshop',
-  '/api/uploads/banner/training',
-  '/dist/api/uploads/banner/webinar',
-  '/dist/api/uploads/banner/workshop',
-  '/dist/api/uploads/banner/training'
+  "/api/uploads/banner/webinar",
+  "/api/uploads/banner/workshop",
+  "/api/uploads/banner/training",
+  "/api/uploads/banner/index",
+  "/api/uploads/material/banner",
+  "/dist/api/uploads/banner/webinar",
+  "/dist/api/uploads/banner/workshop",
+  "/dist/api/uploads/banner/training",
+  "/dist/api/uploads/banner/index",
+  "/dist/api/uploads/material/banner",
 ];
 
 function createFolder(folderPath) {
@@ -26,7 +30,7 @@ function createFolder(folderPath) {
   }
 }
 
-folders.forEach(folder => {
+folders.forEach((folder) => {
   createFolder(folder);
 });
 
