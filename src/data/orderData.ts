@@ -10,12 +10,18 @@ const create = async (orderData: any) => {
   return order;
 };
 
-const list = async (eventType: any) => {
-  const orders = await prisma.order.findMany({
-    where: {
-      eventType: eventType,
-    },
-  });
+const list = async (eventType?: any) => {
+  if (eventType) {
+    const orders = await prisma.order.findMany({
+      where: {
+        eventType: eventType,
+      },
+    });
+
+    return orders;
+  }
+
+  const orders = await prisma.order.findMany();
 
   return orders;
 };

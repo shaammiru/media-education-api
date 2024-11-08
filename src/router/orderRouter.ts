@@ -4,7 +4,6 @@ import { validateBody, validateParams } from "../middleware/requestValidator";
 import {
   orderSchema,
   userOrderSchema,
-  orderListSchema,
   orderUpdateSchema,
 } from "../schema/orderSchema";
 import {
@@ -28,7 +27,7 @@ router.post("/user", validateBody(userOrderSchema), userCreate);
 router.use(verifyAdmin);
 
 router.post("/", validateBody(orderSchema), create);
-router.get("/", validateBody(orderListSchema), list);
+router.get("/", list);
 router.get("/:id", getById);
 router.put("/:id", validateBody(orderUpdateSchema), updateById);
 router.delete("/:id", deleteById);

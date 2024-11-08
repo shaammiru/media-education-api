@@ -12,17 +12,14 @@ const userOrderSchema = joi.object({
 });
 
 const orderListSchema = joi.object({
-  eventType: joi
-    .string()
-    .valid(...eventTypeEnum)
-    .required(),
+  event_type: joi.string().valid(...eventTypeEnum),
 });
 
 const orderUpdateSchema = joi.object({
   accountId: joi.string().uuid({ version: "uuidv4" }),
   eventId: joi.string().uuid({ version: "uuidv4" }),
   eventType: joi.string().valid(...eventTypeEnum),
-  isVerified: joi.boolean()
+  isVerified: joi.boolean(),
 });
 
 export { orderSchema, userOrderSchema, orderListSchema, orderUpdateSchema };

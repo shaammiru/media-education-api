@@ -3,6 +3,7 @@ import orderData from "../data/orderData";
 import webinarData from "../data/webinarData";
 import workshopData from "../data/workshopData";
 import trainingData from "../data/trainingData";
+import { orderListSchema } from "../schema/orderSchema";
 
 const checkEventAvaibility = async (eventId: string) => {
   let isValid = false;
@@ -81,9 +82,17 @@ const userCreate = async (req: any, res: Response, next: NextFunction) => {
   }
 };
 
-const list = async (req: any, res: Response, next: NextFunction) => {
+const list = async (req: Request, res: Response, next: NextFunction) => {
   try {
-    const orders = await orderData.list(req.body.eventType);
+    let orders;
+
+    if (req.query.event_type) {
+      await orderListSchema.validateAsync(req.query);
+      orders = await orderData.list(req.query.event_type);
+    } else {
+      orders = await orderData.list();
+    }
+
     return res.status(200).json({ message: "List of Orders", data: orders });
   } catch (error) {
     next(error);
