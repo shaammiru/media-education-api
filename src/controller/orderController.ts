@@ -101,11 +101,24 @@ const list = async (req: Request, res: Response, next: NextFunction) => {
 
 const getById = async (req: Request, res: Response, next: NextFunction) => {
   try {
-    const order = await orderData.getById(req.params.id);
+    const order: any = await orderData.getById(req.params.id);
     if (!order) {
       res.status(404).json({ error: "Order not found" });
       return;
     }
+
+    let event;
+
+    if (order.eventType === "WEBINAR") {
+      event = await webinarData.getById(order.eventId);
+    } else if (order.eventType === "WORKSHOP") {
+      event = await workshopData.getById(order.eventId);
+    } else if (order.eventType === "TRAINING") {
+      event = await trainingData.getById(order.eventId);
+    }
+
+    order.event = event;
+
     return res.status(200).json({ message: "Order By Id", data: order });
   } catch (error) {
     next(error);

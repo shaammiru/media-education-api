@@ -31,6 +31,16 @@ const getById = async (id: string) => {
     where: {
       id: id,
     },
+    include: {
+      account: {
+        select: {
+          id: true,
+          fullname: true,
+          email: true,
+          phone: true,
+        },
+      },
+    },
   });
 
   if (!order) return;
