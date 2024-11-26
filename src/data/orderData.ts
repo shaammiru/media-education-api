@@ -1,3 +1,4 @@
+import { ProductType } from "@prisma/client";
 import prisma from "../utility/prisma";
 
 const create = async (orderData: any) => {
