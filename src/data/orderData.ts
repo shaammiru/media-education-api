@@ -1,6 +1,4 @@
-import { PrismaClient, ProductType } from "@prisma/client";
-
-const prisma = new PrismaClient();
+import prisma from "../utility/prisma";
 
 const create = async (orderData: any) => {
   const order = await prisma.order.create({

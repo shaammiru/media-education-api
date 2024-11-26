@@ -1,6 +1,5 @@
-import { PrismaClient, Role } from "@prisma/client";
-
-const prisma = new PrismaClient();
+import prisma from "../utility/prisma";
+import { Role } from "@prisma/client";
 
 const create = async (data: any) => {
   const account = await prisma.account.create({

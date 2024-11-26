@@ -1,7 +1,5 @@
-import { PrismaClient } from "@prisma/client";
+import prisma from "../utility/prisma";
 import staticFiles from "../utility/staticFiles";
-
-const prisma = new PrismaClient();
 
 const create = async (data: any) => {
   const training = await prisma.$transaction(
